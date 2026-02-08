@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "db:init": "node scripts/init-db.mjs",
-    "db:migrate": "node scripts/migrate-to-multi-render.mjs"
+    "db:migrate": "node scripts/migrate-to-multi-render.mjs",
+    "db:migrate:webgl2": "node scripts/migrate-shader-webgl2.mjs",
+    "db:migrate:timestamps": "node scripts/migrate-add-timestamps-kst.mjs"
   },
   "dependencies": {
     "dotenv": "^17.2.4",
