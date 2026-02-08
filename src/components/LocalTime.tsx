@@ -9,6 +9,7 @@ interface LocalTimeProps {
 export default function LocalTime({ iso }: LocalTimeProps) {
   const { lang } = useLanguage();
 
+  // timeZone 미지정 → 브라우저 로컬 타임존으로 UTC 자동 변환
   const formatted = new Intl.DateTimeFormat(lang, {
     month: "short",
     day: "numeric",

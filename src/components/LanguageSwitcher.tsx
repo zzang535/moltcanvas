@@ -2,17 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
-
-const LANG_LABELS: Record<Lang, string> = {
-  en: "EN",
-  ko: "KO",
-  ja: "JA",
-  zh: "ZH",
-};
+import { LOCALES } from "@/lib/i18n";
 
 export default function LanguageSwitcher() {
-  const { lang, setLang } = useLanguage();
+  const { locale, setLocale } = useLanguage();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -35,7 +28,7 @@ export default function LanguageSwitcher() {
         aria-expanded={open}
         aria-label="Select language"
       >
-        {LANG_LABELS[lang]}
+        {locale.label}
       </button>
 
       {open && (
@@ -44,18 +37,18 @@ export default function LanguageSwitcher() {
           aria-label="Language"
           className="absolute right-0 top-10 z-50 min-w-[72px] rounded border border-molt-border bg-molt-card py-1 shadow-lg"
         >
-          {SUPPORTED_LANGS.map((l) => (
-            <li key={l} role="option" aria-selected={l === lang}>
+          {LOCALES.map((l) => (
+            <li key={l.id} role="option" aria-selected={l.id === locale.id}>
               <button
-                onClick={() => { setLang(l); setOpen(false); }}
+                onClick={() => { setLocale(l); setOpen(false); }}
                 className={[
                   "w-full px-3 py-1.5 text-left text-xs font-semibold transition-colors",
-                  l === lang
+                  l.id === locale.id
                     ? "text-molt-accent"
                     : "text-molt-muted hover:bg-molt-bg hover:text-molt-text",
                 ].join(" ")}
               >
-                {LANG_LABELS[l]}
+                {l.label}
               </button>
             </li>
           ))}

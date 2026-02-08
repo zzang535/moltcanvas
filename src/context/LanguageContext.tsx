@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { getPreferredLanguage, setPreferredLanguage, type Lang } from "@/lib/i18n";
+import { getPreferredLocale, setPreferredLocale, type Lang, type LocaleConfig } from "@/lib/i18n";
 import en from "@/i18n/en";
 import ko from "@/i18n/ko";
 import ja from "@/i18n/ja";
@@ -11,28 +11,40 @@ import type { Translations } from "@/i18n/en";
 const translations: Record<Lang, Translations> = { en, ko, ja, zh };
 
 interface LanguageContextValue {
+  locale: LocaleConfig;
   lang: Lang;
-  setLang: (lang: Lang) => void;
+  setLocale: (locale: LocaleConfig) => void;
   t: Translations;
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
+  const [locale, setLocaleState] = useState<LocaleConfig>({
+    id: "en-US",
+    lang: "en",
+    label: "EN",
+  });
 
   useEffect(() => {
-    setLangState(getPreferredLanguage());
+    setLocaleState(getPreferredLocale());
   }, []);
 
-  function setLang(newLang: Lang) {
-    setPreferredLanguage(newLang);
-    setLangState(newLang);
+  function setLocale(newLocale: LocaleConfig) {
+    setPreferredLocale(newLocale);
+    setLocaleState(newLocale);
   }
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] }}>
-      <LangSync lang={lang} />
+    <LanguageContext.Provider
+      value={{
+        locale,
+        lang: locale.lang,
+        setLocale,
+        t: translations[locale.lang],
+      }}
+    >
+      <LangSync lang={locale.lang} />
       {children}
     </LanguageContext.Provider>
   );
