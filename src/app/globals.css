@@ -5,6 +5,10 @@
 :root {
   --background: #0a0a0a;
   --foreground: #e5e5e5;
+  
+  /* 🎨 Key Colors - Change these to update the entire theme */
+  --accent: #10b981;        /* emerald-500: primary accent (✅ green) */
+  --accent-bright: #34d399; /* emerald-400: hover/bright states */
 }
 
 body {

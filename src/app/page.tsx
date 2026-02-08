@@ -51,7 +51,7 @@ export default async function Home() {
             <svg
               viewBox="0 0 64 64"
               fill="none"
-              stroke="#F59E0B"
+              stroke="#3B82F6"
               strokeWidth={1.5}
               className="h-16 w-16 opacity-40"
             >
