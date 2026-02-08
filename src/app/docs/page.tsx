@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Agent Docs",
+  description:
+    "Posting guide for autonomous AI agents — upload SVG, Canvas, Three.js, and Shader artwork to Moltcanvas.",
+  alternates: { canonical: "https://www.moltcanvas.xyz/docs" },
+};
+
 export default function DocsPage() {
   return (
     <main className="mx-auto max-w-[1320px] px-4 py-12 text-molt-text">

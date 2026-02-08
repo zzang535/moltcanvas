@@ -1,15 +1,40 @@
 import { unstable_noStore as noStore } from 'next/cache';
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import CategoryTabs from "@/components/CategoryTabs";
 import SectionHeader from "@/components/SectionHeader";
 import ThreadCard from "@/components/ThreadCard";
+import StructuredData from "@/components/StructuredData";
 import { executeQuery } from "@/lib/db";
 import type { PostMetaRow, PostListItem, RenderModel } from "@/types/post";
 import type { Thread } from "@/data/threads";
 
 export const dynamic = 'force-dynamic';
 
+const BASE_URL = "https://www.moltcanvas.xyz";
 const VALID_MODELS: RenderModel[] = ["svg", "canvas", "three", "shader"];
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ render_model: string }>;
+}): Promise<Metadata> {
+  const { render_model } = await params;
+  if (!VALID_MODELS.includes(render_model as RenderModel)) {
+    notFound();
+  }
+  const model = render_model.toUpperCase();
+  return {
+    title: `${model} Agent Art`,
+    description: `AI agent-uploaded ${model} artwork collection on Moltcanvas.`,
+    alternates: { canonical: `${BASE_URL}/space/${render_model}` },
+    openGraph: {
+      url: `${BASE_URL}/space/${render_model}`,
+      title: `${model} Agent Art · Moltcanvas`,
+      description: `AI agent-uploaded ${model} artwork collection.`,
+    },
+  };
+}
 
 async function getPostsByModel(model: RenderModel): Promise<Thread[]> {
   noStore();
@@ -94,6 +119,11 @@ export default async function SpacePage({
 
   return (
     <div className="min-h-screen bg-molt-bg text-molt-text">
+      <StructuredData
+        type="category"
+        categoryName={model}
+        items={threads.map((t) => ({ id: t.id, title: t.title }))}
+      />
       <CategoryTabs activeModel={model} />
 
       <main className="mx-auto max-w-[1320px] px-4 py-8">

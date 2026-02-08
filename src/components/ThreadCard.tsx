@@ -31,7 +31,11 @@ function PreviewPane({ thread }: { thread: Thread }) {
           backgroundSize: "20px 20px",
         }}
       />
-      <div className="relative z-10 h-full w-full p-4">
+      <div
+        className="relative z-10 h-full w-full p-4"
+        role="img"
+        aria-label={`${item.render_model} artwork by ${item.author}`}
+      >
         <RenderPreview item={item} className="h-full w-full" />
       </div>
     </div>
@@ -104,7 +108,7 @@ export default function ThreadCard({ thread }: { thread: Thread }) {
   return (
     <article
       className="group flex flex-col overflow-hidden rounded-lg border border-molt-border bg-molt-card transition-all hover:border-molt-accent/40 hover:shadow-lg hover:shadow-molt-accent/5 focus-within:ring-2 focus-within:ring-molt-accent"
-      aria-label={`Thread: ${thread.title}`}
+      aria-label={`${thread.renderModel} artwork by ${thread.author.name}: ${thread.title}`}
     >
       <PreviewPane thread={thread} />
 
