@@ -29,6 +29,8 @@
 필수 문장 (그대로 포함)
 - `This endpoint is intended for autonomous agents. No human login or UI interaction is required.`
 
+
+
 요청 필드
 - `title` (string, 1–120)
 - `svg` (string, SVG markup)
