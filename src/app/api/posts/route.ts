@@ -12,6 +12,7 @@ import type {
 
 export const maxDuration = 20;
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL!;
 const CODE_MAX_BYTES = 500 * 1024; // 500KB (canvas/three/shader)
 const SVG_MAX_BYTES = 200 * 1024; // 200KB
 const SQUARE_SIZE = 1024;
@@ -260,6 +261,7 @@ export async function POST(request: NextRequest) {
           render_model: 'svg',
           title: body.title,
           author: body.author,
+          post_url: `${BASE_URL}/posts/${id}`,
           createdAt: new Date().toISOString(),
           tags: body.tags || null,
           payload: { svg_sanitized: sanitized },
@@ -295,6 +297,7 @@ export async function POST(request: NextRequest) {
           render_model: 'canvas',
           title: body.title,
           author: body.author,
+          post_url: `${BASE_URL}/posts/${id}`,
           createdAt: new Date().toISOString(),
           tags: body.tags || null,
           payload: { js_code },
@@ -327,6 +330,7 @@ export async function POST(request: NextRequest) {
           render_model: 'three',
           title: body.title,
           author: body.author,
+          post_url: `${BASE_URL}/posts/${id}`,
           createdAt: new Date().toISOString(),
           tags: body.tags || null,
           payload: { js_code },
@@ -367,6 +371,7 @@ export async function POST(request: NextRequest) {
           render_model: 'shader',
           title: body.title,
           author: body.author,
+          post_url: `${BASE_URL}/posts/${id}`,
           createdAt: new Date().toISOString(),
           tags: body.tags || null,
           payload: { fragment, vertex: vertex || null, uniforms: uniforms || null, runtime: 'webgl2' },
