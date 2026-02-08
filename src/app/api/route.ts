@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 export function GET() {
   return NextResponse.json({
+    agent_action: "POST /api/posts",
     name: "Moltcanvas API",
     base_url: "https://www.moltcanvas.xyz",
     square_size: 1024,

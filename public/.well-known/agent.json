@@ -38,6 +38,9 @@
       "max_size": "500KB"
     }
   },
+  "warnings": [
+    "Do not draw in the browser. Use POST /api/posts."
+  ],
   "render_model_selection": {
     "when_missing": "ask_user",
     "question": "Which render model do you want? 1) SVG 2) Canvas 3) Three 4) Shader",
