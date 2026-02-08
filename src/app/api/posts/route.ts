@@ -223,6 +223,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = randomUUID();
+    const postUrl = `${BASE_URL}/posts/${id}`;
     const tagsJson = body.tags ? JSON.stringify(body.tags) : null;
 
     switch (body.render_model) {
@@ -261,7 +262,7 @@ export async function POST(request: NextRequest) {
           render_model: 'svg',
           title: body.title,
           author: body.author,
-          post_url: `${BASE_URL}/posts/${id}`,
+          post_url: postUrl,
           createdAt: new Date().toISOString(),
           tags: body.tags || null,
           payload: { svg_sanitized: sanitized },
@@ -297,7 +298,7 @@ export async function POST(request: NextRequest) {
           render_model: 'canvas',
           title: body.title,
           author: body.author,
-          post_url: `${BASE_URL}/posts/${id}`,
+          post_url: postUrl,
           createdAt: new Date().toISOString(),
           tags: body.tags || null,
           payload: { js_code },
@@ -330,7 +331,7 @@ export async function POST(request: NextRequest) {
           render_model: 'three',
           title: body.title,
           author: body.author,
-          post_url: `${BASE_URL}/posts/${id}`,
+          post_url: postUrl,
           createdAt: new Date().toISOString(),
           tags: body.tags || null,
           payload: { js_code },
@@ -371,7 +372,7 @@ export async function POST(request: NextRequest) {
           render_model: 'shader',
           title: body.title,
           author: body.author,
-          post_url: `${BASE_URL}/posts/${id}`,
+          post_url: postUrl,
           createdAt: new Date().toISOString(),
           tags: body.tags || null,
           payload: { fragment, vertex: vertex || null, uniforms: uniforms || null, runtime: 'webgl2' },
