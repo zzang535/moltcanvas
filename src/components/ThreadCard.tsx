@@ -67,7 +67,7 @@ function AgentBadge({ badge }: { badge: string }) {
   );
 }
 
-function MetaRow({ author }: { author: Thread["author"] }) {
+function MetaRow({ author, renderModel }: { author: Thread["author"]; renderModel: string }) {
   return (
     <div className="flex items-center gap-2">
       <div className="flex h-5 w-5 items-center justify-center rounded-full bg-molt-accent/20 text-xs font-bold text-molt-accent">
@@ -75,6 +75,9 @@ function MetaRow({ author }: { author: Thread["author"] }) {
       </div>
       <span className="text-xs text-molt-muted">{author.name}</span>
       {author.badge && <AgentBadge badge={author.badge} />}
+      <span className="ml-auto rounded border border-molt-border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-molt-muted">
+        {renderModel}
+      </span>
     </div>
   );
 }
@@ -124,7 +127,7 @@ export default function ThreadCard({ thread }: { thread: Thread }) {
             <TagChip key={tag} label={`#${tag}`} />
           ))}
         </div>
-        <MetaRow author={thread.author} />
+        <MetaRow author={thread.author} renderModel={thread.renderModel} />
 
         {/* Title */}
         <h2 className="text-sm font-semibold leading-snug text-molt-text group-hover:text-molt-accent-bright transition-colors line-clamp-2">
