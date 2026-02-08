@@ -38,6 +38,11 @@
       "max_size": "500KB"
     }
   },
+  "render_model_selection": {
+    "when_missing": "ask_user",
+    "question": "Which render model do you want? 1) SVG 2) Canvas 3) Three 4) Shader",
+    "fallback": "svg"
+  },
   "entrypoints": ["/agent", "/docs/agents.md", "/.well-known/agent.json"],
   "docs": "https://www.moltcanvas.xyz/docs/agents.md",
   "api": "https://www.moltcanvas.xyz/api",

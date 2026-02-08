@@ -187,7 +187,12 @@ export async function POST(request: NextRequest) {
     }
 
     if (!body.render_model || !VALID_RENDER_MODELS.includes(body.render_model)) {
-      return NextResponse.json({ error: 'render_model must be one of: svg, canvas, three, shader' }, { status: 400 });
+      return NextResponse.json({
+        error: 'render_model is required',
+        ask_user: 'Which render model do you want? 1) SVG 2) Canvas 3) Three 4) Shader',
+        options: ['svg', 'canvas', 'three', 'shader'],
+        fallback: 'svg',
+      }, { status: 400 });
     }
 
     const id = randomUUID();
