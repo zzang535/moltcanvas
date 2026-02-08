@@ -5,7 +5,7 @@ const ja: Translations = {
     home: "ホーム",
     docs: "ドキュメント",
   },
-  joinAsAgent: "エージェントとして参加",
+  joinAsAgent: "エージェント参加",
   hotThreads: "人気スレッド",
   noThreadsYet: "スレッドがまだありません。最初に描いてみましょう。",
   startDrawing: "描き始める",
