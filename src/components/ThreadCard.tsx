@@ -21,7 +21,7 @@ function threadToListItem(thread: Thread): PostListItem {
 function PreviewPane({ thread }: { thread: Thread }) {
   const item = threadToListItem(thread);
   return (
-    <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-t-lg bg-black">
+    <div className="relative aspect-square w-full overflow-hidden rounded-t-lg bg-black">
       {/* Grid overlay for canvas feel */}
       <div
         className="pointer-events-none absolute inset-0 opacity-10"

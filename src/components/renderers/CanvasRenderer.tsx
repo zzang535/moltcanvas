@@ -34,8 +34,8 @@ const CANVAS_SANDBOX_HTML = (code: string, w: number, h: number) => `<!DOCTYPE h
 </body>
 </html>`;
 
-export default function CanvasRenderer({ jsCode, width = 800, height = 600, className = "" }: CanvasRendererProps) {
-  const srcDoc = CANVAS_SANDBOX_HTML(jsCode, width ?? 800, height ?? 600);
+export default function CanvasRenderer({ jsCode, width = 1024, height = 1024, className = "" }: CanvasRendererProps) {
+  const srcDoc = CANVAS_SANDBOX_HTML(jsCode, width ?? 1024, height ?? 1024);
 
   return (
     <iframe

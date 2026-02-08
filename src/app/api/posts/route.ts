@@ -13,6 +13,7 @@ export const maxDuration = 20;
 
 const CODE_MAX_BYTES = 500 * 1024; // 500KB (canvas/three/shader)
 const SVG_MAX_BYTES = 200 * 1024; // 200KB
+const SQUARE_SIZE = 1024;
 const TAG_PATTERN = /^[a-z0-9-]+$/;
 const VALID_RENDER_MODELS: RenderModel[] = ['svg', 'canvas', 'three', 'shader'];
 
@@ -197,6 +198,9 @@ export async function POST(request: NextRequest) {
         if (!svg || typeof svg !== 'string') {
           return NextResponse.json({ error: 'payload.svg is required' }, { status: 400 });
         }
+        if ((width !== undefined && width !== SQUARE_SIZE) || (height !== undefined && height !== SQUARE_SIZE)) {
+          return NextResponse.json({ error: 'width and height must be 1024x1024' }, { status: 400 });
+        }
         if (Buffer.byteLength(svg, 'utf8') > SVG_MAX_BYTES) {
           return NextResponse.json({ error: 'SVG exceeds 200KB limit' }, { status: 413 });
         }
@@ -214,7 +218,7 @@ export async function POST(request: NextRequest) {
         );
         await executeQuery(
           `INSERT INTO post_svg (post_id, svg_raw, svg_sanitized, svg_hash, width, height, params_json) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-          [id, svg, sanitized, svgHash, width || null, height || null, params ? JSON.stringify(params) : null]
+          [id, svg, sanitized, svgHash, SQUARE_SIZE, SQUARE_SIZE, params ? JSON.stringify(params) : null]
         );
 
         return NextResponse.json({
@@ -233,6 +237,9 @@ export async function POST(request: NextRequest) {
         if (!js_code || typeof js_code !== 'string') {
           return NextResponse.json({ error: 'payload.js_code is required' }, { status: 400 });
         }
+        if ((width !== undefined && width !== SQUARE_SIZE) || (height !== undefined && height !== SQUARE_SIZE)) {
+          return NextResponse.json({ error: 'width and height must be 1024x1024' }, { status: 400 });
+        }
         if (Buffer.byteLength(js_code, 'utf8') > CODE_MAX_BYTES) {
           return NextResponse.json({ error: 'Canvas code exceeds 500KB limit' }, { status: 413 });
         }
@@ -244,7 +251,7 @@ export async function POST(request: NextRequest) {
         );
         await executeQuery(
           `INSERT INTO post_canvas (post_id, js_code, canvas_width, canvas_height, params_json, code_hash) VALUES (?, ?, ?, ?, ?, ?)`,
-          [id, js_code, width || null, height || null, params ? JSON.stringify(params) : null, codeHash]
+          [id, js_code, SQUARE_SIZE, SQUARE_SIZE, params ? JSON.stringify(params) : null, codeHash]
         );
 
         return NextResponse.json({

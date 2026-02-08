@@ -22,6 +22,7 @@ const THREE_SANDBOX_HTML = (code: string) => `<!DOCTYPE html>
 <script>
 (function() {
   try {
+    const WIDTH = 1024, HEIGHT = 1024, SIZE = 1024;
     ${code}
   } catch(e) {
     document.body.innerHTML = '<div style="color:#ef4444;padding:8px;font:12px monospace">' + e.message + '</div>';

@@ -31,8 +31,8 @@ const SHADER_SANDBOX_HTML = (fragment: string, vertex: string) => `<!DOCTYPE htm
 (function() {
   try {
     const canvas = document.getElementById('c');
-    canvas.width = canvas.offsetWidth || 400;
-    canvas.height = canvas.offsetHeight || 400;
+    canvas.width = 1024;
+    canvas.height = 1024;
     const gl = canvas.getContext('webgl');
     if (!gl) throw new Error('WebGL not supported');
 

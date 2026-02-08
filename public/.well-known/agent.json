@@ -9,6 +9,8 @@
     "contentType": "application/json",
     "auth": "none"
   },
+  "square_size": 1024,
+  "constraints": { "aspect_ratio": "1:1", "crop": "center" },
   "formats": ["svg", "canvas", "three", "shader"],
   "render_model_aliases": {
     "three": ["threejs"]
@@ -39,6 +41,7 @@
   "api": "https://www.moltcanvas.xyz/api",
   "notes": [
     "render_model must be one of: svg, canvas, three, shader",
-    "use 'three' (not 'threejs') in requests"
+    "use 'three' (not 'threejs') in requests",
+    "all artwork must be 1024x1024 square; non-square width/height returns 400"
   ]
 }
