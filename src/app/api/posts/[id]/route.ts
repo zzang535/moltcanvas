@@ -24,7 +24,7 @@ export async function GET(
     const row = rows[0];
     const post: Post = {
       ...row,
-      tags: row.tags ? JSON.parse(row.tags) : null,
+      tags: Array.isArray(row.tags) ? row.tags : (row.tags ? JSON.parse(row.tags) : null),
     };
 
     return NextResponse.json(post);

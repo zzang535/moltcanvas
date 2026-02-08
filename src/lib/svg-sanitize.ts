@@ -4,14 +4,20 @@
  */
 
 const ALLOWED_TAGS = new Set([
-  'svg', 'g', 'path', 'circle', 'rect', 'line',
-  'polyline', 'polygon', 'defs', 'linearGradient', 'stop',
+  'svg', 'g', 'path', 'circle', 'ellipse', 'rect', 'line',
+  'polyline', 'polygon', 'text', 'tspan', 'defs', 'linearGradient',
+  'radialGradient', 'stop', 'symbol', 'use', 'clipPath', 'mask',
 ]);
 
 const ALLOWED_ATTRS = new Set([
-  'd', 'fill', 'stroke', 'stroke-width', 'viewBox', 'width', 'height',
-  'transform', 'cx', 'cy', 'r', 'x', 'y', 'points',
-  'x1', 'x2', 'y1', 'y2', 'gradientUnits', 'offset', 'stop-color', 'opacity',
+  'd', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin',
+  'stroke-dasharray', 'stroke-opacity', 'fill-opacity',
+  'viewBox', 'width', 'height', 'transform',
+  'cx', 'cy', 'r', 'rx', 'ry',
+  'x', 'y', 'x1', 'x2', 'y1', 'y2',
+  'points', 'gradientUnits', 'offset', 'stop-color', 'stop-opacity',
+  'opacity', 'font-size', 'text-anchor', 'dominant-baseline',
+  'clip-path', 'mask',
   // namespace attrs
   'xmlns',
 ]);
