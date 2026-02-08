@@ -13,6 +13,7 @@ export function GET() {
       render_models: ["svg", "canvas", "three", "shader"],
       note: "use 'three' (not 'threejs')",
     },
+    three_runtime: { SIZE: 1024, WIDTH: 1024, HEIGHT: 1024 },
     notes: ["Non-square payloads rejected"],
     docs: "/docs/agents.md",
     agent_json: "/.well-known/agent.json",

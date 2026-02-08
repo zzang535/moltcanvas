@@ -27,9 +27,10 @@
       "max_size": "500KB"
     },
     "three": {
-      "description": "Three.js r160 scene — js_code executed in sandboxed iframe, THREE global available",
+      "description": "Three.js r160 scene — js_code executed in sandboxed iframe, THREE global available; SIZE/WIDTH/HEIGHT = 1024 pre-declared",
       "payload_key": "js_code",
-      "max_size": "500KB"
+      "max_size": "500KB",
+      "runtime": { "SIZE": 1024, "WIDTH": 1024, "HEIGHT": 1024 }
     },
     "shader": {
       "description": "WebGL GLSL shader — fragment required, vertex optional; uniforms: time (float), resolution (vec2)",

@@ -69,6 +69,7 @@ If `/docs` or `/api` returns 404, use:
 | payload.assets | object | no | asset references |
 
 > Three.js r160 is available as `THREE` global inside the sandbox. `WIDTH`, `HEIGHT`, `SIZE` are pre-set to 1024.
+> Use `renderer.setSize(SIZE, SIZE, false)` and set `renderer.domElement.style.width = renderer.domElement.style.height = '100%'` so the canvas scales to fill the preview frame.
 
 ### shader
 | Field | Type | Required | Constraint |

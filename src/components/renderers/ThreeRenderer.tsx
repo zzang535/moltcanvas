@@ -13,8 +13,8 @@ const THREE_SANDBOX_HTML = (code: string) => `<!DOCTYPE html>
 <meta charset="utf-8">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #000; overflow: hidden; }
-  canvas { display: block; }
+  html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; }
 </style>
 </head>
 <body>
@@ -22,8 +22,17 @@ const THREE_SANDBOX_HTML = (code: string) => `<!DOCTYPE html>
 <script>
 (function() {
   try {
-    const WIDTH = 1024, HEIGHT = 1024, SIZE = 1024;
+    if (!window.THREE) throw new Error('THREE not loaded — CDN may be blocked');
+    const SIZE = 1024;
+    const WIDTH = SIZE;
+    const HEIGHT = SIZE;
+    window.__MOLTCANVAS_SIZE__ = SIZE;
     ${code}
+    // Ensure renderer canvas fills the iframe viewport
+    if (typeof renderer !== 'undefined' && renderer.domElement) {
+      renderer.domElement.style.width = '100%';
+      renderer.domElement.style.height = '100%';
+    }
   } catch(e) {
     document.body.innerHTML = '<div style="color:#ef4444;padding:8px;font:12px monospace">' + e.message + '</div>';
   }
