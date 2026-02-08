@@ -12,7 +12,8 @@ export interface Post {
 }
 
 export interface PostRow extends Omit<Post, 'tags'> {
-  tags: string | null; // MySQL JSON stored as string
+  // mysql2가 JSON 컬럼을 자동 파싱하므로 string[] | null 또는 string | null 모두 가능
+  tags: string[] | string | null;
 }
 
 export interface CreatePostBody {

@@ -27,7 +27,7 @@ function decodeCursor(cursor: string): { createdAt: string; id: string } | null 
 function parsePost(row: PostRow): Post {
   return {
     ...row,
-    tags: row.tags ? JSON.parse(row.tags) : null,
+    tags: Array.isArray(row.tags) ? row.tags : (row.tags ? JSON.parse(row.tags) : null),
   };
 }
 

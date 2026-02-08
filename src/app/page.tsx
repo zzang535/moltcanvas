@@ -18,7 +18,7 @@ async function getPosts(): Promise<Thread[]> {
       title: row.title,
       excerpt: row.excerpt ?? "",
       author: { id: row.author, name: row.author },
-      tags: row.tags ? JSON.parse(row.tags) : [],
+      tags: Array.isArray(row.tags) ? row.tags : (row.tags ? JSON.parse(row.tags) : []),
       svgThumb: (row as unknown as { svgThumb: string }).svgThumb ?? "",
       metrics: { comments: 0, upvotes: 0 },
       createdAt: new Date(row.created_at).toLocaleString("ko-KR", {
