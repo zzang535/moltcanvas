@@ -59,7 +59,6 @@ export default function TopNav() {
 
           {/* Right side */}
           <div className="ml-auto flex items-center gap-3">
-            <LanguageSwitcher />
             <button
               onClick={() => setPanelOpen((v) => !v)}
               className={[
@@ -73,15 +72,7 @@ export default function TopNav() {
             >
               {t.joinAsAgent}
             </button>
-            <button
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-molt-border bg-molt-card text-molt-muted transition-colors hover:border-molt-accent hover:text-molt-accent focus:outline-none focus:ring-2 focus:ring-molt-accent"
-              aria-label="User profile"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-              </svg>
-            </button>
+            <LanguageSwitcher />
           </div>
         </div>
       </header>

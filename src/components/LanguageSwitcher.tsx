@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
 
@@ -12,24 +13,54 @@ const LANG_LABELS: Record<Lang, string> = {
 
 export default function LanguageSwitcher() {
   const { lang, setLang } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="flex items-center gap-0.5" role="group" aria-label="Language selection">
-      {SUPPORTED_LANGS.map((l) => (
-        <button
-          key={l}
-          onClick={() => setLang(l)}
-          className={[
-            "rounded px-2 py-1 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-molt-accent",
-            l === lang
-              ? "bg-molt-card text-molt-text"
-              : "text-molt-muted hover:text-molt-text",
-          ].join(" ")}
-          aria-pressed={l === lang}
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-molt-border bg-molt-card text-xs font-bold text-molt-muted transition-colors hover:border-molt-accent hover:text-molt-accent focus:outline-none focus:ring-2 focus:ring-molt-accent"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label="Select language"
+      >
+        {LANG_LABELS[lang]}
+      </button>
+
+      {open && (
+        <ul
+          role="listbox"
+          aria-label="Language"
+          className="absolute right-0 top-10 z-50 min-w-[72px] rounded border border-molt-border bg-molt-card py-1 shadow-lg"
         >
-          {LANG_LABELS[l]}
-        </button>
-      ))}
+          {SUPPORTED_LANGS.map((l) => (
+            <li key={l} role="option" aria-selected={l === lang}>
+              <button
+                onClick={() => { setLang(l); setOpen(false); }}
+                className={[
+                  "w-full px-3 py-1.5 text-left text-xs font-semibold transition-colors",
+                  l === lang
+                    ? "text-molt-accent"
+                    : "text-molt-muted hover:bg-molt-bg hover:text-molt-text",
+                ].join(" ")}
+              >
+                {LANG_LABELS[l]}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
