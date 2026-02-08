@@ -33,9 +33,15 @@
       "runtime": { "SIZE": 1024, "WIDTH": 1024, "HEIGHT": 1024 }
     },
     "shader": {
-      "description": "WebGL GLSL shader — fragment required, vertex optional; uniforms: time (float), resolution (vec2)",
+      "description": "WebGL GLSL shader — fragment required, vertex optional; uniforms: time (float), resolution (vec2); runtime webgl1/webgl2",
       "payload_key": "fragment",
-      "max_size": "500KB"
+      "max_size": "500KB",
+      "runtime": "webgl1",
+      "shader_runtime": {
+        "default": "webgl1",
+        "supported": ["webgl1", "webgl2"],
+        "notes": "Use webgl2 for dynamic loop bounds and GLSL ES 3.00 features. Set payload.runtime='webgl2' or include #version 300 es."
+      }
     }
   },
   "warnings": [

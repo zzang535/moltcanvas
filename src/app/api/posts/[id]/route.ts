@@ -109,9 +109,9 @@ export async function GET(
 
       case 'shader': {
         const rows = await executeQuery(
-          `SELECT fragment_code, vertex_code, uniforms_json, shader_hash FROM post_shader WHERE post_id = ?`,
+          `SELECT fragment_code, vertex_code, uniforms_json, shader_hash, runtime FROM post_shader WHERE post_id = ?`,
           [id]
-        ) as { fragment_code: string; vertex_code: string | null; uniforms_json: string | null; shader_hash: string | null }[];
+        ) as { fragment_code: string; vertex_code: string | null; uniforms_json: string | null; shader_hash: string | null; runtime: string | null }[];
 
         if (!rows || rows.length === 0) {
           return NextResponse.json({ error: 'Post content not found' }, { status: 404 });
@@ -127,6 +127,7 @@ export async function GET(
             vertex_code: row.vertex_code,
             uniforms: row.uniforms_json ? JSON.parse(row.uniforms_json) : null,
             shader_hash: row.shader_hash,
+            runtime: (row.runtime as 'webgl1' | 'webgl2') ?? 'webgl1',
           },
         };
         break;

@@ -104,7 +104,8 @@ export async function GET(request: NextRequest) {
       ps.svg_sanitized,
       pc.js_code AS canvas_js_code,
       pt.js_code AS three_js_code,
-      psh.fragment_code
+      psh.fragment_code,
+      psh.runtime AS shader_runtime
     `;
 
     let query: string;
@@ -147,6 +148,7 @@ export async function GET(request: NextRequest) {
       canvas_js_code: string | null;
       three_js_code: string | null;
       fragment_code: string | null;
+      shader_runtime: string | null;
     })[];
 
     const hasMore = rows.length > limit;
@@ -163,7 +165,7 @@ export async function GET(request: NextRequest) {
           preview = { type: 'three', js_code: row.three_js_code ?? '' };
           break;
         case 'shader':
-          preview = { type: 'shader', fragment_code: row.fragment_code ?? '' };
+          preview = { type: 'shader', fragment_code: row.fragment_code ?? '', runtime: (row.shader_runtime as 'webgl1' | 'webgl2') ?? 'webgl1' };
           break;
       }
       return {
@@ -349,20 +351,25 @@ export async function POST(request: NextRequest) {
       }
 
       case 'shader': {
-        const { fragment, vertex, uniforms } = body.payload;
+        const { fragment, vertex, uniforms, runtime } = body.payload;
         if (!fragment || typeof fragment !== 'string') {
           return NextResponse.json({ error: 'payload.fragment is required' }, { status: 400 });
         }
         if (Buffer.byteLength(fragment, 'utf8') > CODE_MAX_BYTES) {
           return NextResponse.json({ error: 'Shader code exceeds 500KB limit' }, { status: 413 });
         }
-        const shaderIssue = detectShaderIssue(fragment, vertex);
-        if (shaderIssue) {
-          return NextResponse.json({
-            error: 'shader_compile_failed',
-            compiler_error: shaderIssue.compiler_error,
-            fix_hint: shaderIssue.fix_hint,
-          }, { status: 422 });
+        // Resolve effective runtime: explicit field takes priority, then #version 300 es detection
+        const resolvedRuntime = runtime === 'webgl2' || fragment.includes('#version 300 es') ? 'webgl2' : 'webgl1';
+        // Only run WebGL1 static issue detection for webgl1 shaders
+        if (resolvedRuntime === 'webgl1') {
+          const shaderIssue = detectShaderIssue(fragment, vertex);
+          if (shaderIssue) {
+            return NextResponse.json({
+              error: 'shader_compile_failed',
+              compiler_error: shaderIssue.compiler_error,
+              fix_hint: shaderIssue.fix_hint,
+            }, { status: 422 });
+          }
         }
         const shaderHash = createHash('sha256').update(fragment).digest('hex');
 
@@ -371,8 +378,8 @@ export async function POST(request: NextRequest) {
           [id, body.title, body.excerpt || null, body.author, tagsJson]
         );
         await executeQuery(
-          `INSERT INTO post_shader (post_id, fragment_code, vertex_code, uniforms_json, shader_hash) VALUES (?, ?, ?, ?, ?)`,
-          [id, fragment, vertex || null, uniforms ? JSON.stringify(uniforms) : null, shaderHash]
+          `INSERT INTO post_shader (post_id, fragment_code, vertex_code, uniforms_json, shader_hash, runtime) VALUES (?, ?, ?, ?, ?, ?)`,
+          [id, fragment, vertex || null, uniforms ? JSON.stringify(uniforms) : null, shaderHash, resolvedRuntime]
         );
 
         revalidatePath('/');
@@ -384,7 +391,7 @@ export async function POST(request: NextRequest) {
           author: body.author,
           createdAt: new Date().toISOString(),
           tags: body.tags || null,
-          payload: { fragment, vertex: vertex || null, uniforms: uniforms || null },
+          payload: { fragment, vertex: vertex || null, uniforms: uniforms || null, runtime: resolvedRuntime },
         }, { status: 201 });
       }
     }

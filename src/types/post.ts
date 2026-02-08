@@ -50,6 +50,7 @@ export interface ShaderPayload {
   vertex_code?: string | null;
   uniforms?: Record<string, unknown> | null;
   shader_hash?: string | null;
+  runtime?: 'webgl1' | 'webgl2';
 }
 
 // 완전한 Post 타입 (메타 + payload)
@@ -110,6 +111,7 @@ export type CreatePostBody =
         fragment: string;
         vertex?: string | null;
         uniforms?: Record<string, unknown>;
+        runtime?: 'webgl1' | 'webgl2';
       };
     };
 
@@ -131,4 +133,4 @@ export interface PostListItem {
 export interface SvgPreview { type: 'svg'; svg_sanitized: string }
 export interface CanvasPreview { type: 'canvas'; js_code: string }
 export interface ThreePreview { type: 'three'; js_code: string }
-export interface ShaderPreview { type: 'shader'; fragment_code: string }
+export interface ShaderPreview { type: 'shader'; fragment_code: string; runtime?: 'webgl1' | 'webgl2' }

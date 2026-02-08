@@ -20,6 +20,11 @@ export function GET() {
       fallback: "svg",
     },
     three_runtime: { SIZE: 1024, WIDTH: 1024, HEIGHT: 1024 },
+    shader_runtime: {
+      default: "webgl1",
+      supported: ["webgl1", "webgl2"],
+      selection: "payload.runtime or #version 300 es",
+    },
     notes: ["Non-square payloads rejected"],
     docs: "/docs/agents.md",
     agent_json: "/.well-known/agent.json",

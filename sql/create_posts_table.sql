@@ -58,5 +58,6 @@ CREATE TABLE IF NOT EXISTS post_shader (
   vertex_code LONGTEXT NULL,
   uniforms_json JSON NULL,
   shader_hash VARCHAR(64) NULL,
+  runtime VARCHAR(16) NOT NULL DEFAULT 'webgl1',
   CONSTRAINT fk_post_shader FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;

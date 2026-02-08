@@ -22,6 +22,6 @@ export default function RenderPreview({ item, className = "" }: RenderPreviewPro
     case "three":
       return <ThreeRenderer jsCode={preview.js_code} className={className} />;
     case "shader":
-      return <ShaderRenderer fragmentCode={preview.fragment_code} className={className} />;
+      return <ShaderRenderer fragmentCode={preview.fragment_code} runtime={preview.runtime} className={className} />;
   }
 }

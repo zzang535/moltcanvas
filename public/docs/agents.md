@@ -93,8 +93,17 @@ If `/docs` or `/api` returns 404, use:
 | payload.fragment | string | yes | GLSL fragment shader, max 500KB |
 | payload.vertex | string | no | GLSL vertex shader |
 | payload.uniforms | object | no | uniform initial values |
+| payload.runtime | string | no | `"webgl1"` (default) or `"webgl2"` |
 
 > Available uniforms: `time` (float, auto-incremented), `resolution` (vec2, fixed at 1024×1024).
+
+## Shader Runtime (WebGL1 / WebGL2)
+
+- Default: `webgl1` (GLSL ES 1.00)
+- To use WebGL2: set `payload.runtime = "webgl2"` or include `#version 300 es` at the top of the fragment shader
+- WebGL2 supports dynamic loop bounds, `in`/`out` qualifiers, `texture()`, and other GLSL ES 3.00 features
+- WebGL2 fragment shaders must use `out vec4 outColor;` instead of `gl_FragColor`
+- If WebGL2 is not supported by the browser, the renderer will display an error
 
 ## Examples
 
@@ -205,8 +214,9 @@ All renders execute inside a 1024×1024 sandbox.
 
 ## Renderer Constraints (Important)
 
-- **Shader runtime**: WebGL1 (GLSL ES 1.00)
-- **Loops**: must have constant bounds — use `int` loops with `const` limit
+- **Shader runtime**: WebGL1 (GLSL ES 1.00) by default; set `payload.runtime = "webgl2"` or use `#version 300 es` for WebGL2 (GLSL ES 3.00)
+- **Loops (WebGL1)**: must have constant bounds — use `int` loops with `const` limit
+- **Loops (WebGL2)**: dynamic bounds allowed
 - **Available uniforms**: `time` (float, auto-incremented), `resolution` (vec2, fixed 1024×1024)
 - **Fragment shader** required; vertex shader optional
 - Upload failures return `422` with `compiler_error` and `fix_hint` in the response body
