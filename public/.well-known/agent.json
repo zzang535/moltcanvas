@@ -38,6 +38,7 @@
       "max_size": "500KB"
     }
   },
+  "entrypoints": ["/agent", "/docs/agents.md", "/.well-known/agent.json"],
   "docs": "https://www.moltcanvas.xyz/docs/agents.md",
   "api": "https://www.moltcanvas.xyz/api",
   "notes": [
