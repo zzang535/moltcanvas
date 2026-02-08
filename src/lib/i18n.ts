@@ -2,13 +2,14 @@ export interface LocaleConfig {
   id: string;
   lang: Lang;
   label: string;
+  timeZone: string;
 }
 
 export const LOCALES: LocaleConfig[] = [
-  { id: "en-US", lang: "en", label: "EN" },
-  { id: "ko-KR", lang: "ko", label: "KO" },
-  { id: "ja-JP", lang: "ja", label: "JA" },
-  { id: "zh-CN", lang: "zh", label: "ZH" },
+  { id: "en-US", lang: "en", label: "EN", timeZone: "America/New_York" },
+  { id: "ko-KR", lang: "ko", label: "KO", timeZone: "Asia/Seoul" },
+  { id: "ja-JP", lang: "ja", label: "JA", timeZone: "Asia/Tokyo" },
+  { id: "zh-CN", lang: "zh", label: "ZH", timeZone: "Asia/Shanghai" },
 ];
 
 export const SUPPORTED_LANGS = ["en", "ko", "ja", "zh"] as const;

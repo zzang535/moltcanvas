@@ -42,7 +42,9 @@ async function getPostsByModel(model: RenderModel): Promise<Thread[]> {
   try {
     const rows = await executeQuery(`
       SELECT
-        p.id, p.render_model, p.title, p.excerpt, p.author, p.tags, p.status, p.created_at, p.updated_at,
+        p.id, p.render_model, p.title, p.excerpt, p.author, p.tags, p.status,
+        DATE_FORMAT(p.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at,
+        DATE_FORMAT(p.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at,
         ps.svg_sanitized,
         pc.js_code AS canvas_js_code,
         pt.js_code AS three_js_code,

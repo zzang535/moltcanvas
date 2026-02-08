@@ -13,7 +13,9 @@ export async function GET(
 
     // 먼저 메타 정보와 render_model 확인
     const metaRows = await executeQuery(
-      `SELECT id, render_model, title, excerpt, author, tags, status, created_at, updated_at
+      `SELECT id, render_model, title, excerpt, author, tags, status,
+              DATE_FORMAT(created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at,
+              DATE_FORMAT(updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at
        FROM posts WHERE id = ? AND status != 'deleted'`,
       [id]
     ) as PostMetaRow[];

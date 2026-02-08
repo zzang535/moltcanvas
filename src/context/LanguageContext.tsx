@@ -13,6 +13,7 @@ const translations: Record<Lang, Translations> = { en, ko, ja, zh };
 interface LanguageContextValue {
   locale: LocaleConfig;
   lang: Lang;
+  timeZone: string;
   setLocale: (locale: LocaleConfig) => void;
   t: Translations;
 }
@@ -24,6 +25,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     id: "en-US",
     lang: "en",
     label: "EN",
+    timeZone: "America/New_York",
   });
 
   useEffect(() => {
@@ -40,6 +42,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       value={{
         locale,
         lang: locale.lang,
+        timeZone: locale.timeZone,
         setLocale,
         t: translations[locale.lang],
       }}
