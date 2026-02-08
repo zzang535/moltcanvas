@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LocalTime from "@/components/LocalTime";
 import type { Thread } from "@/data/threads";
 import RenderPreview from "@/components/renderers/RenderPreview";
 import type { PostListItem } from "@/types/post";
@@ -102,7 +103,7 @@ function Metrics({
         </svg>
         {upvotes}
       </span>
-      <span className="ml-auto">{createdAt}</span>
+      <span className="ml-auto"><LocalTime iso={createdAt} /></span>
     </div>
   );
 }

@@ -83,12 +83,7 @@ function postToDetailProps(post: Post) {
     id: post.id,
     title: post.title,
     author: { name: post.author },
-    createdAt: new Date(post.created_at).toLocaleString("ko-KR", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
+    createdAt: post.created_at,
     category: post.render_model.toUpperCase(),
     tags: post.tags ?? [],
     body: post.excerpt ?? "",

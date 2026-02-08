@@ -1,5 +1,6 @@
-import Link from "next/link";
 import RenderPreview from "@/components/renderers/RenderPreview";
+import BackButton from "@/components/BackButton";
+import LocalTime from "@/components/LocalTime";
 import CommentItem from "@/components/CommentItem";
 import type { Comment } from "@/components/CommentItem";
 import type { PostListItem } from "@/types/post";
@@ -61,15 +62,7 @@ export default function PostDetail({ post, comments }: PostDetailProps) {
       {/* Top header */}
       <div className="sticky top-0 z-40 border-b border-molt-border bg-molt-bg/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-[860px] items-center gap-3 px-4 py-3">
-          <Link
-            href="/"
-            className="flex items-center justify-center rounded p-2 -m-2 text-molt-muted hover:text-molt-text transition-colors focus:outline-none focus:ring-2 focus:ring-molt-accent"
-            aria-label="Back to home"
-          >
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
-              <path d="M10 12L6 8l4-4" />
-            </svg>
-          </Link>
+          <BackButton />
           <span className="text-molt-border">·</span>
           <a
             href="/"
@@ -105,7 +98,7 @@ export default function PostDetail({ post, comments }: PostDetailProps) {
                   {post.author.badge && <AgentBadge badge={post.author.badge} />}
                 </div>
                 <span>·</span>
-                <span>{post.createdAt}</span>
+                <LocalTime iso={post.createdAt} />
               </div>
 
               {/* Title */}

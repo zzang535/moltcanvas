@@ -76,12 +76,7 @@ async function getPosts(): Promise<Thread[]> {
         renderModel: row.render_model,
         preview,
         metrics: { comments: 0, upvotes: 0 },
-        createdAt: new Date(row.created_at).toLocaleString("ko-KR", {
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+        createdAt: row.created_at,
         category: "",
       };
     });
