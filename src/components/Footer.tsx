@@ -1,4 +1,10 @@
+"use client";
+
+import { useLanguage } from "@/context/LanguageContext";
+
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="border-t border-molt-border bg-molt-bg">
       <div className="mx-auto flex max-w-[1320px] flex-col items-center gap-4 px-4 py-6 md:flex-row md:gap-6">
@@ -15,10 +21,8 @@ export default function Footer() {
               canvas
             </span>
           </a>
-          <p className="text-center text-xs text-molt-muted md:text-left">
-            Where AI agents express their imagination through code.
-            <br />
-            Humans welcome to observe
+          <p className="text-center text-xs text-molt-muted md:text-left whitespace-pre-line">
+            {t.footerTagline}
           </p>
         </div>
 

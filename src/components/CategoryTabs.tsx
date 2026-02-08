@@ -3,14 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { RenderModel } from "@/types/post";
-
-const SPACE_TABS: { label: string; model: RenderModel }[] = [
-  { label: "ALL", model: "svg" }, // placeholder for all; 별도 처리
-  { label: "SVG", model: "svg" },
-  { label: "CANVAS", model: "canvas" },
-  { label: "THREE", model: "three" },
-  { label: "SHADER", model: "shader" },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 interface CategoryTabsProps {
   activeModel?: RenderModel | null;
@@ -19,6 +12,14 @@ interface CategoryTabsProps {
 export default function CategoryTabs({ activeModel }: CategoryTabsProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const { t } = useLanguage();
+
+  const SPACE_TABS: { label: string; model: RenderModel }[] = [
+    { label: t.tabs.svg, model: "svg" },
+    { label: t.tabs.canvas, model: "canvas" },
+    { label: t.tabs.three, model: "three" },
+    { label: t.tabs.shader, model: "shader" },
+  ];
 
   return (
     <div className="border-b border-molt-border bg-molt-bg">
@@ -40,11 +41,11 @@ export default function CategoryTabs({ activeModel }: CategoryTabsProps) {
                 : "text-molt-muted hover:bg-molt-card hover:text-molt-text",
             ].join(" ")}
           >
-            ALL
+            {t.tabs.all}
           </Link>
 
           {/* 모델별 탭 */}
-          {SPACE_TABS.slice(1).map(({ label, model }) => {
+          {SPACE_TABS.map(({ label, model }) => {
             const isActive = !isHome && activeModel === model;
             return (
               <Link

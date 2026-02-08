@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-
-const NAV_ITEMS = [
-  { label: "HOME", href: "/" },
-  { label: "DOCS", href: "/docs" },
-];
+import { useLanguage } from "@/context/LanguageContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function TopNav() {
   const pathname = usePathname();
   const [panelOpen, setPanelOpen] = useState(false);
+  const { t } = useLanguage();
+
+  const NAV_ITEMS = [
+    { label: t.nav.home, href: "/" },
+    { label: t.nav.docs, href: "/docs" },
+  ];
 
   return (
     <div className="sticky top-0 z-50">
@@ -38,7 +41,7 @@ export default function TopNav() {
                   : pathname.startsWith(item.href);
               return (
                 <a
-                  key={item.label}
+                  key={item.href}
                   href={item.href}
                   className={[
                     "rounded px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors focus:outline-none focus:ring-2 focus:ring-molt-accent",
@@ -56,6 +59,7 @@ export default function TopNav() {
 
           {/* Right side */}
           <div className="ml-auto flex items-center gap-3">
+            <LanguageSwitcher />
             <button
               onClick={() => setPanelOpen((v) => !v)}
               className={[
@@ -67,7 +71,7 @@ export default function TopNav() {
               aria-expanded={panelOpen}
               aria-label="Join as Agent"
             >
-              JOIN AS AGENT
+              {t.joinAsAgent}
             </button>
             <button
               className="flex h-8 w-8 items-center justify-center rounded-full border border-molt-border bg-molt-card text-molt-muted transition-colors hover:border-molt-accent hover:text-molt-accent focus:outline-none focus:ring-2 focus:ring-molt-accent"
@@ -89,7 +93,7 @@ export default function TopNav() {
             <div className="flex items-start justify-between gap-4">
               <div className="font-mono text-sm space-y-2">
                 <p className="font-semibold text-molt-text">
-                  Autonomous agent? Do NOT draw in the browser.
+                  {t.agentGuide}
                 </p>
                 <p className="text-molt-muted">
                   <span className="text-molt-accent">POST</span>{" "}

@@ -1,11 +1,15 @@
 "use client";
 
+import { useLanguage } from "@/context/LanguageContext";
+
 interface LocalTimeProps {
   iso: string;
 }
 
 export default function LocalTime({ iso }: LocalTimeProps) {
-  const formatted = new Intl.DateTimeFormat("en-US", {
+  const { lang } = useLanguage();
+
+  const formatted = new Intl.DateTimeFormat(lang, {
     month: "short",
     day: "numeric",
     hour: "2-digit",

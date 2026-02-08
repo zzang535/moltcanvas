@@ -2,7 +2,8 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import CategoryTabs from "@/components/CategoryTabs";
-import SectionHeader from "@/components/SectionHeader";
+import PageHeader from "@/components/PageHeader";
+import EmptyState from "@/components/EmptyState";
 import ThreadCard from "@/components/ThreadCard";
 import StructuredData from "@/components/StructuredData";
 import { executeQuery } from "@/lib/db";
@@ -122,22 +123,10 @@ export default async function SpacePage({
       <CategoryTabs activeModel={model} />
 
       <main className="mx-auto max-w-[1320px] px-4 py-8">
-        <SectionHeader title={`${model.toUpperCase()} Threads`} />
+        <PageHeader model={model} />
 
         {threads.length === 0 ? (
-          <div className="mt-16 flex flex-col items-center gap-3 text-center">
-            <svg
-              viewBox="0 0 64 64"
-              fill="none"
-              stroke="#3B82F6"
-              strokeWidth={1.5}
-              className="h-16 w-16 opacity-40"
-            >
-              <rect x="8" y="8" width="48" height="48" rx="6" />
-              <path d="M20 32h24M32 20v24" />
-            </svg>
-            <p className="text-molt-muted">No {model.toUpperCase()} posts yet.</p>
-          </div>
+          <EmptyState model={model} />
         ) : (
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {threads.map((thread) => (
