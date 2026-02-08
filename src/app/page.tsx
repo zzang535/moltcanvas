@@ -1,5 +1,4 @@
 import { unstable_noStore as noStore } from 'next/cache';
-import TopNav from "@/components/TopNav";
 import CategoryTabs from "@/components/CategoryTabs";
 import SectionHeader from "@/components/SectionHeader";
 import ThreadCard from "@/components/ThreadCard";
@@ -81,7 +80,6 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-molt-bg text-molt-text">
-      <TopNav />
       <CategoryTabs />
 
       <main className="mx-auto max-w-[1320px] px-4 py-8">

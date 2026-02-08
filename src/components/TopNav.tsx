@@ -32,22 +32,26 @@ export default function TopNav() {
           {/* Global nav */}
           <nav className="hidden flex-1 items-center gap-1 md:flex" aria-label="Primary navigation">
             {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/" || pathname.startsWith("/space/")
+                  : pathname.startsWith(item.href);
               return (
-              <a
-                key={item.label}
-                href={item.href}
-                className={[
-                  "rounded px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors focus:outline-none focus:ring-2 focus:ring-molt-accent",
-                  isActive
-                    ? "text-molt-accent"
-                    : "text-molt-muted hover:bg-molt-card hover:text-molt-text",
-                ].join(" ")}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-            )})}
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={[
+                    "rounded px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors focus:outline-none focus:ring-2 focus:ring-molt-accent",
+                    isActive
+                      ? "text-molt-accent"
+                      : "text-molt-muted hover:bg-molt-card hover:text-molt-text",
+                  ].join(" ")}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
+              )
+            })}
           </nav>
 
           {/* Right side */}

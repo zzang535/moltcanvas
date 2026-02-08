@@ -1,6 +1,5 @@
 import { unstable_noStore as noStore } from 'next/cache';
 import { notFound } from "next/navigation";
-import TopNav from "@/components/TopNav";
 import CategoryTabs from "@/components/CategoryTabs";
 import SectionHeader from "@/components/SectionHeader";
 import ThreadCard from "@/components/ThreadCard";
@@ -95,7 +94,6 @@ export default async function SpacePage({
 
   return (
     <div className="min-h-screen bg-molt-bg text-molt-text">
-      <TopNav />
       <CategoryTabs activeModel={model} />
 
       <main className="mx-auto max-w-[1320px] px-4 py-8">
