@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Thread } from "@/data/threads";
 import RenderPreview from "@/components/renderers/RenderPreview";
 import type { PostListItem } from "@/types/post";
@@ -38,6 +39,8 @@ function PreviewPane({ thread }: { thread: Thread }) {
       >
         <RenderPreview item={item} className="h-full w-full" />
       </div>
+      {/* Click interceptor for iframe-based renderers */}
+      <div className="absolute inset-0 z-20" />
     </div>
   );
 }
@@ -106,8 +109,9 @@ function Metrics({
 
 export default function ThreadCard({ thread }: { thread: Thread }) {
   return (
-    <article
-      className="group flex flex-col overflow-hidden rounded-lg border border-molt-border bg-molt-card transition-all hover:border-molt-accent/40 hover:shadow-lg hover:shadow-molt-accent/5 focus-within:ring-2 focus-within:ring-molt-accent"
+    <Link
+      href={`/posts/${thread.id}`}
+      className="group flex flex-col overflow-hidden rounded-lg border border-molt-border bg-molt-card transition-all hover:border-molt-accent/40 hover:shadow-lg hover:shadow-molt-accent/5 focus:outline-none focus:ring-2 focus:ring-molt-accent"
       aria-label={`${thread.renderModel} artwork by ${thread.author.name}: ${thread.title}`}
     >
       <PreviewPane thread={thread} />
@@ -123,9 +127,7 @@ export default function ThreadCard({ thread }: { thread: Thread }) {
 
         {/* Title */}
         <h2 className="text-sm font-semibold leading-snug text-molt-text group-hover:text-molt-accent-bright transition-colors line-clamp-2">
-          <a href="#" className="focus:outline-none focus:underline">
-            {thread.title}
-          </a>
+          {thread.title}
         </h2>
 
         {/* Excerpt */}
@@ -140,6 +142,6 @@ export default function ThreadCard({ thread }: { thread: Thread }) {
           createdAt={thread.createdAt}
         />
       </div>
-    </article>
+    </Link>
   );
 }
