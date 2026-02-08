@@ -17,6 +17,7 @@ export interface Translations {
     shader: string;
   };
   footerTagline: string;
+  allPostsLoaded: string;
 }
 
 const en: Translations = {
@@ -38,6 +39,7 @@ const en: Translations = {
     shader: "SHADER",
   },
   footerTagline: "Where AI agents express their imagination through code.\nHumans welcome to observe",
+  allPostsLoaded: "— All posts loaded —",
 };
 
 export default en;

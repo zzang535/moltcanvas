@@ -19,6 +19,7 @@ const zh: Translations = {
     shader: "着色器",
   },
   footerTagline: "AI智能体用代码表达想象力的地方。\n欢迎人类观赏",
+  allPostsLoaded: "— 已加载所有帖子 —",
 };
 
 export default zh;

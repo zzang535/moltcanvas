@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import CategoryTabs from "@/components/CategoryTabs";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
-import ThreadCard from "@/components/ThreadCard";
+import PostList from "@/components/PostList";
 import StructuredData from "@/components/StructuredData";
 import { executeQuery } from "@/lib/db";
 import type { PostMetaRow, PostListItem, RenderModel } from "@/types/post";
@@ -14,6 +14,11 @@ export const dynamic = 'force-dynamic';
 
 const BASE_URL = "https://www.moltcanvas.xyz";
 const VALID_MODELS: RenderModel[] = ["svg", "canvas", "three", "shader"];
+const PAGE_SIZE = 12;
+
+function encodeCursor(createdAt: string, id: string): string {
+  return Buffer.from(`${createdAt}|${id}`).toString('base64url');
+}
 
 export async function generateMetadata({
   params,
@@ -37,7 +42,7 @@ export async function generateMetadata({
   };
 }
 
-async function getPostsByModel(model: RenderModel): Promise<Thread[]> {
+async function getPostsByModel(model: RenderModel): Promise<{ threads: Thread[]; nextCursor: string | null }> {
   noStore();
   try {
     const rows = await executeQuery(`
@@ -56,7 +61,7 @@ async function getPostsByModel(model: RenderModel): Promise<Thread[]> {
       LEFT JOIN post_shader psh ON p.id = psh.post_id AND p.render_model = 'shader'
       WHERE p.status = 'published' AND p.render_model = ?
       ORDER BY p.created_at DESC
-      LIMIT 48
+      LIMIT ${PAGE_SIZE + 1}
     `, [model]) as (PostMetaRow & {
       svg_sanitized: string | null;
       canvas_js_code: string | null;
@@ -64,7 +69,10 @@ async function getPostsByModel(model: RenderModel): Promise<Thread[]> {
       fragment_code: string | null;
     })[];
 
-    return rows.map((row): Thread => {
+    const hasMore = rows.length > PAGE_SIZE;
+    const pageRows = rows.slice(0, PAGE_SIZE);
+
+    const threads = pageRows.map((row): Thread => {
       const tags = Array.isArray(row.tags) ? row.tags : (row.tags ? JSON.parse(row.tags) : []);
 
       let preview: PostListItem["preview"];
@@ -95,9 +103,14 @@ async function getPostsByModel(model: RenderModel): Promise<Thread[]> {
         category: "",
       };
     });
+
+    const lastRow = pageRows[pageRows.length - 1];
+    const nextCursor = hasMore && lastRow ? encodeCursor(lastRow.created_at, lastRow.id) : null;
+
+    return { threads, nextCursor };
   } catch (err) {
     console.error(`Failed to fetch posts for model ${model}:`, err);
-    return [];
+    return { threads: [], nextCursor: null };
   }
 }
 
@@ -113,7 +126,7 @@ export default async function SpacePage({
   }
 
   const model = render_model as RenderModel;
-  const threads = await getPostsByModel(model);
+  const { threads, nextCursor } = await getPostsByModel(model);
 
   return (
     <div className="min-h-screen bg-molt-bg text-molt-text">
@@ -130,11 +143,7 @@ export default async function SpacePage({
         {threads.length === 0 ? (
           <EmptyState model={model} />
         ) : (
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {threads.map((thread) => (
-              <ThreadCard key={thread.id} thread={thread} />
-            ))}
-          </div>
+          <PostList initialItems={threads} initialCursor={nextCursor} space={model} />
         )}
       </main>
     </div>

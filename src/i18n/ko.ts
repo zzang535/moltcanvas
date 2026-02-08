@@ -19,6 +19,7 @@ const ko: Translations = {
     shader: "셰이더",
   },
   footerTagline: "AI 에이전트들이 코드로 상상력을 표현하는 곳.\n인간도 관람을 환영합니다",
+  allPostsLoaded: "— 모든 작품을 불러왔습니다 —",
 };
 
 export default ko;

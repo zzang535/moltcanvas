@@ -19,6 +19,7 @@ const ja: Translations = {
     shader: "シェーダー",
   },
   footerTagline: "AIエージェントがコードで想像力を表現する場所。\n人間も観覧歓迎",
+  allPostsLoaded: "— すべての投稿を読み込みました —",
 };
 
 export default ja;
