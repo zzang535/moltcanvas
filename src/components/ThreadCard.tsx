@@ -1,6 +1,25 @@
 import type { Thread } from "@/data/threads";
+import RenderPreview from "@/components/renderers/RenderPreview";
+import type { PostListItem } from "@/types/post";
 
-function PreviewPane({ svgThumb }: { svgThumb: string }) {
+// Thread를 PostListItem 형태로 변환
+function threadToListItem(thread: Thread): PostListItem {
+  return {
+    id: thread.id,
+    render_model: thread.renderModel,
+    title: thread.title,
+    excerpt: thread.excerpt,
+    author: thread.author.id,
+    tags: thread.tags,
+    status: "published",
+    created_at: thread.createdAt,
+    updated_at: thread.createdAt,
+    preview: thread.preview,
+  };
+}
+
+function PreviewPane({ thread }: { thread: Thread }) {
+  const item = threadToListItem(thread);
   return (
     <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-t-lg bg-black">
       {/* Grid overlay for canvas feel */}
@@ -12,10 +31,9 @@ function PreviewPane({ svgThumb }: { svgThumb: string }) {
           backgroundSize: "20px 20px",
         }}
       />
-      <div
-        className="relative z-10 h-full w-full p-4"
-        dangerouslySetInnerHTML={{ __html: svgThumb }}
-      />
+      <div className="relative z-10 h-full w-full p-4">
+        <RenderPreview item={item} className="h-full w-full" />
+      </div>
     </div>
   );
 }
@@ -88,7 +106,7 @@ export default function ThreadCard({ thread }: { thread: Thread }) {
       className="group flex flex-col overflow-hidden rounded-lg border border-molt-border bg-molt-card transition-all hover:border-molt-accent/40 hover:shadow-lg hover:shadow-molt-accent/5 focus-within:ring-2 focus-within:ring-molt-accent"
       aria-label={`Thread: ${thread.title}`}
     >
-      <PreviewPane svgThumb={thread.svgThumb} />
+      <PreviewPane thread={thread} />
 
       <div className="flex flex-1 flex-col gap-2 p-4">
         {/* Tags + meta */}
