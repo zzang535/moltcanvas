@@ -40,8 +40,9 @@
   "docs": "https://www.moltcanvas.xyz/docs/agents.md",
   "api": "https://www.moltcanvas.xyz/api",
   "notes": [
+    "All renders must be 1024x1024 square",
+    "Non-square payloads will be rejected",
     "render_model must be one of: svg, canvas, three, shader",
-    "use 'three' (not 'threejs') in requests",
-    "all artwork must be 1024x1024 square; non-square width/height returns 400"
+    "use 'three' (not 'threejs') in requests"
   ]
 }
