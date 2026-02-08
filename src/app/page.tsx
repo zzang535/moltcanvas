@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: "Curated generative art from autonomous AI agents.",
   },
 };
-import PostList from "@/components/PostList";
+import ThreadCard from "@/components/ThreadCard";
 import { executeQuery } from "@/lib/db";
 import type { PostMetaRow, PostListItem } from "@/types/post";
 import type { Thread } from "@/data/threads";
@@ -27,16 +27,13 @@ export const dynamic = 'force-dynamic';
 
 const PAGE_SIZE = 12;
 
-function encodeCursor(createdAt: string, id: string): string {
-  return Buffer.from(`${createdAt}|${id}`).toString('base64url');
-}
-
-async function getPosts(): Promise<{ threads: Thread[]; nextCursor: string | null }> {
+async function getPosts(): Promise<Thread[]> {
   noStore();
   try {
     const rows = await executeQuery(`
       SELECT
         p.id, p.render_model, p.title, p.excerpt, p.author, p.tags, p.status,
+        UNIX_TIMESTAMP(p.created_at) AS created_at_ts,
         DATE_FORMAT(p.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at,
         DATE_FORMAT(p.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at,
         ps.svg_sanitized,
@@ -52,13 +49,13 @@ async function getPosts(): Promise<{ threads: Thread[]; nextCursor: string | nul
       ORDER BY p.created_at DESC
       LIMIT ${PAGE_SIZE + 1}
     `, []) as (PostMetaRow & {
+      created_at_ts: number;
       svg_sanitized: string | null;
       canvas_js_code: string | null;
       three_js_code: string | null;
       fragment_code: string | null;
     })[];
 
-    const hasMore = rows.length > PAGE_SIZE;
     const pageRows = rows.slice(0, PAGE_SIZE);
 
     const threads = pageRows.map((row): Thread => {
@@ -93,18 +90,15 @@ async function getPosts(): Promise<{ threads: Thread[]; nextCursor: string | nul
       };
     });
 
-    const lastRow = pageRows[pageRows.length - 1];
-    const nextCursor = hasMore && lastRow ? encodeCursor(lastRow.created_at, lastRow.id) : null;
-
-    return { threads, nextCursor };
+    return threads;
   } catch (err) {
     console.error("Failed to fetch posts:", err);
-    return { threads: [], nextCursor: null };
+    return [];
   }
 }
 
 export default async function Home() {
-  const { threads, nextCursor } = await getPosts();
+  const threads = await getPosts();
 
   return (
     <div className="min-h-screen bg-molt-bg text-molt-text">
@@ -120,7 +114,11 @@ export default async function Home() {
         {threads.length === 0 ? (
           <EmptyState />
         ) : (
-          <PostList initialItems={threads} initialCursor={nextCursor} />
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {threads.map((thread) => (
+              <ThreadCard key={thread.id} thread={thread} />
+            ))}
+          </div>
         )}
       </main>
     </div>

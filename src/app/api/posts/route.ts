@@ -43,16 +43,18 @@ function detectShaderIssue(fragment: string, vertex?: string | null) {
   return null;
 }
 
-// cursor 형식: base64(created_at|id)
-function encodeCursor(createdAt: string, id: string): string {
-  return Buffer.from(`${createdAt}|${id}`).toString('base64url');
+// cursor 형식: base64(JSON.stringify({ ts: number, id: string }))
+function encodeCursor(ts: number, id: string): string {
+  return Buffer.from(JSON.stringify({ ts, id })).toString('base64url');
 }
-function decodeCursor(cursor: string): { createdAt: string; id: string } | null {
+function decodeCursor(cursor: string): { ts: number; id: string } | null {
   try {
     const decoded = Buffer.from(cursor, 'base64url').toString('utf8');
-    const sep = decoded.lastIndexOf('|');
-    if (sep === -1) return null;
-    return { createdAt: decoded.slice(0, sep), id: decoded.slice(sep + 1) };
+    const parsed = JSON.parse(decoded);
+    if (typeof parsed.ts !== 'number' || typeof parsed.id !== 'string') {
+      return null;
+    }
+    return { ts: parsed.ts, id: parsed.id };
   } catch {
     return null;
   }
@@ -85,6 +87,7 @@ export async function GET(request: NextRequest) {
 
     const selectPreview = `
       p.id, p.render_model, p.title, p.excerpt, p.author, p.tags, p.status,
+      UNIX_TIMESTAMP(p.created_at) AS created_at_ts,
       DATE_FORMAT(p.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at,
       DATE_FORMAT(p.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at,
       ps.svg_sanitized,
@@ -105,17 +108,24 @@ export async function GET(request: NextRequest) {
       if (!parsed) {
         return NextResponse.json({ error: 'Invalid cursor' }, { status: 400 });
       }
+
+      // 타임스탬프를 정수로 명시적 변환
+      const ts = Math.floor(parsed.ts);
+
       query = `
         SELECT ${selectPreview}
         FROM posts p
         ${previewJoin}
         WHERE p.status = 'published'
           ${spaceFilter}
-          AND (p.created_at < ? OR (p.created_at = ? AND p.id < ?))
+          AND (UNIX_TIMESTAMP(p.created_at) < ? OR (UNIX_TIMESTAMP(p.created_at) = ? AND p.id < ?))
         ORDER BY p.created_at DESC, p.id DESC
         LIMIT ?
       `;
-      params = [...spaceParam, parsed.createdAt, parsed.createdAt, parsed.id, limit + 1];
+
+      params = space
+        ? [space, ts, ts, parsed.id, limit + 1]
+        : [ts, ts, parsed.id, limit + 1];
     } else {
       query = `
         SELECT ${selectPreview}
@@ -126,10 +136,14 @@ export async function GET(request: NextRequest) {
         ORDER BY p.created_at DESC, p.id DESC
         LIMIT ?
       `;
-      params = [...spaceParam, limit + 1];
+
+      params = space
+        ? [space, limit + 1]
+        : [limit + 1];
     }
 
     const rows = await executeQuery(query, params) as (PostMetaRow & {
+      created_at_ts: number;
       svg_sanitized: string | null;
       canvas_js_code: string | null;
       three_js_code: string | null;
@@ -169,8 +183,9 @@ export async function GET(request: NextRequest) {
     });
 
     const lastItem = items[items.length - 1];
-    const nextCursor = hasMore && lastItem
-      ? encodeCursor(lastItem.created_at, lastItem.id)
+    const lastRow = rows[items.length - 1];
+    const nextCursor = hasMore && lastItem && lastRow
+      ? encodeCursor(lastRow.created_at_ts, lastItem.id)
       : null;
 
     return NextResponse.json({
