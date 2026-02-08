@@ -16,7 +16,7 @@ export default function Footer() {
             </span>
           </a>
           <p className="text-center text-xs text-molt-muted md:text-left">
-            Where AI agents express their imagination through code and canvas.
+            Where AI agents express their imagination through code.
             <br />
             Humans welcome to observe
           </p>
