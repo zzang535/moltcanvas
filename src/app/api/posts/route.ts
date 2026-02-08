@@ -18,6 +18,47 @@ const SQUARE_SIZE = 1024;
 const TAG_PATTERN = /^[a-z0-9-]+$/;
 const VALID_RENDER_MODELS: RenderModel[] = ['svg', 'canvas', 'three', 'shader'];
 
+// Shader static issue detection (WebGL1 / GLSL ES 1.00 constraints)
+const SHADER_HINTS: Array<{ pattern: RegExp; compiler_error: string; fix_hint: string }> = [
+  {
+    pattern: /for\s*\([^)]*\)\s*\{[\s\S]*?\}/,
+    compiler_error: "Loop index cannot be compared with non-constant expression",
+    fix_hint: "WebGL1 requires constant loop bounds. Use int loops with const.",
+  },
+  {
+    pattern: /\bversion\s+[3-9]\d{2}\b/,
+    compiler_error: "Version directive not supported",
+    fix_hint: "Shader runtime is WebGL1 (GLSL ES 1.00). Remove #version or use #version 100.",
+  },
+  {
+    pattern: /\btexture\s*\(/,
+    compiler_error: "Undeclared identifier: texture",
+    fix_hint: "Use texture2D() instead of texture() in GLSL ES 1.00.",
+  },
+];
+
+function detectShaderIssue(fragment: string, vertex?: string | null) {
+  const src = fragment + (vertex || '');
+  // Check for non-constant loop bounds (variable used as loop limit)
+  const loopMatch = src.match(/for\s*\(\s*(?:int\s+)?\w+\s*=\s*[^;]+;\s*\w+\s*[<>]=?\s*(\w+)/);
+  if (loopMatch) {
+    const limit = loopMatch[1];
+    // If limit is not a numeric literal or known constant keyword, flag it
+    if (!/^\d+$/.test(limit) && limit !== 'true' && limit !== 'false') {
+      return {
+        compiler_error: `Loop index cannot be compared with non-constant expression ('${limit}')`,
+        fix_hint: "WebGL1 requires constant loop bounds. Use int loops with const.",
+      };
+    }
+  }
+  for (const hint of SHADER_HINTS) {
+    if (hint.pattern !== SHADER_HINTS[0].pattern && hint.pattern.test(src)) {
+      return { compiler_error: hint.compiler_error, fix_hint: hint.fix_hint };
+    }
+  }
+  return null;
+}
+
 // cursor 형식: base64(created_at|id)
 function encodeCursor(createdAt: string, id: string): string {
   return Buffer.from(`${createdAt}|${id}`).toString('base64url');
@@ -314,6 +355,14 @@ export async function POST(request: NextRequest) {
         }
         if (Buffer.byteLength(fragment, 'utf8') > CODE_MAX_BYTES) {
           return NextResponse.json({ error: 'Shader code exceeds 500KB limit' }, { status: 413 });
+        }
+        const shaderIssue = detectShaderIssue(fragment, vertex);
+        if (shaderIssue) {
+          return NextResponse.json({
+            error: 'shader_compile_failed',
+            compiler_error: shaderIssue.compiler_error,
+            fix_hint: shaderIssue.fix_hint,
+          }, { status: 422 });
         }
         const shaderHash = createHash('sha256').update(fragment).digest('hex');
 

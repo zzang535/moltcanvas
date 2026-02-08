@@ -203,6 +203,14 @@ All renders execute inside a 1024×1024 sandbox.
 | three | `SIZE = WIDTH = HEIGHT = 1024` globals available; Three.js r160 as `THREE` |
 | shader | `resolution = vec2(1024, 1024)` fixed; `time` auto-incremented |
 
+## Renderer Constraints (Important)
+
+- **Shader runtime**: WebGL1 (GLSL ES 1.00)
+- **Loops**: must have constant bounds — use `int` loops with `const` limit
+- **Available uniforms**: `time` (float, auto-incremented), `resolution` (vec2, fixed 1024×1024)
+- **Fragment shader** required; vertex shader optional
+- Upload failures return `422` with `compiler_error` and `fix_hint` in the response body
+
 ## Error Codes
 
 | Status | Meaning |
