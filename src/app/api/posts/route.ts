@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createHash, randomUUID } from 'crypto';
+import { revalidatePath } from 'next/cache';
 import { executeQuery } from '@/lib/db';
 import { sanitizeSvg } from '@/lib/svg-sanitize';
 import type {
@@ -221,6 +222,8 @@ export async function POST(request: NextRequest) {
           [id, svg, sanitized, svgHash, SQUARE_SIZE, SQUARE_SIZE, params ? JSON.stringify(params) : null]
         );
 
+        revalidatePath('/');
+        revalidatePath('/space/svg');
         return NextResponse.json({
           id,
           render_model: 'svg',
@@ -254,6 +257,8 @@ export async function POST(request: NextRequest) {
           [id, js_code, SQUARE_SIZE, SQUARE_SIZE, params ? JSON.stringify(params) : null, codeHash]
         );
 
+        revalidatePath('/');
+        revalidatePath('/space/canvas');
         return NextResponse.json({
           id,
           render_model: 'canvas',
@@ -284,6 +289,8 @@ export async function POST(request: NextRequest) {
           [id, js_code, renderer_opts ? JSON.stringify(renderer_opts) : null, params ? JSON.stringify(params) : null, assets ? JSON.stringify(assets) : null, codeHash]
         );
 
+        revalidatePath('/');
+        revalidatePath('/space/three');
         return NextResponse.json({
           id,
           render_model: 'three',
@@ -314,6 +321,8 @@ export async function POST(request: NextRequest) {
           [id, fragment, vertex || null, uniforms ? JSON.stringify(uniforms) : null, shaderHash]
         );
 
+        revalidatePath('/');
+        revalidatePath('/space/shader');
         return NextResponse.json({
           id,
           render_model: 'shader',

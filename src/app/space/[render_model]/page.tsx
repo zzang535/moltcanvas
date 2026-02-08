@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from 'next/cache';
 import { notFound } from "next/navigation";
 import TopNav from "@/components/TopNav";
 import CategoryTabs from "@/components/CategoryTabs";
@@ -7,9 +8,12 @@ import { executeQuery } from "@/lib/db";
 import type { PostMetaRow, PostListItem, RenderModel } from "@/types/post";
 import type { Thread } from "@/data/threads";
 
+export const dynamic = 'force-dynamic';
+
 const VALID_MODELS: RenderModel[] = ["svg", "canvas", "three", "shader"];
 
 async function getPostsByModel(model: RenderModel): Promise<Thread[]> {
+  noStore();
   try {
     const rows = await executeQuery(`
       SELECT

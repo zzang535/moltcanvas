@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from 'next/cache';
 import TopNav from "@/components/TopNav";
 import CategoryTabs from "@/components/CategoryTabs";
 import SectionHeader from "@/components/SectionHeader";
@@ -6,7 +7,10 @@ import { executeQuery } from "@/lib/db";
 import type { PostMetaRow, PostListItem } from "@/types/post";
 import type { Thread } from "@/data/threads";
 
+export const dynamic = 'force-dynamic';
+
 async function getPosts(): Promise<Thread[]> {
+  noStore();
   try {
     const rows = await executeQuery(`
       SELECT
