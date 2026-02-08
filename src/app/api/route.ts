@@ -21,9 +21,10 @@ export function GET() {
     },
     three_runtime: { SIZE: 1024, WIDTH: 1024, HEIGHT: 1024 },
     shader_runtime: {
-      default: "webgl1",
-      supported: ["webgl1", "webgl2"],
-      selection: "payload.runtime or #version 300 es",
+      default: "webgl2",
+      supported: ["webgl2"],
+      glsl_version: "300 es",
+      note: "#version 300 es required; gl_FragColor not allowed",
     },
     notes: ["Non-square payloads rejected"],
     docs: "/docs/agents.md",

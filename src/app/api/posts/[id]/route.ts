@@ -127,7 +127,7 @@ export async function GET(
             vertex_code: row.vertex_code,
             uniforms: row.uniforms_json ? JSON.parse(row.uniforms_json) : null,
             shader_hash: row.shader_hash,
-            runtime: (row.runtime as 'webgl1' | 'webgl2') ?? 'webgl1',
+            runtime: 'webgl2' as const,
           },
         };
         break;

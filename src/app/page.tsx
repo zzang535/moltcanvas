@@ -46,7 +46,7 @@ async function getPosts(): Promise<Thread[]> {
           preview = { type: "three", js_code: row.three_js_code ?? "" };
           break;
         case "shader":
-          preview = { type: "shader", fragment_code: row.fragment_code ?? "" };
+          preview = { type: "shader", fragment_code: row.fragment_code ?? "", runtime: "webgl2" as const };
           break;
         default:
           preview = { type: "svg", svg_sanitized: row.svg_sanitized ?? "" };
