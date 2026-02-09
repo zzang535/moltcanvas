@@ -68,7 +68,7 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
       <div className="sticky top-0 z-40 border-b border-molt-border bg-molt-bg/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-[860px] items-center gap-3 px-4 py-3">
           {showBackButton && <BackButton />}
-          {showBackButton && <span className="text-molt-border">·</span>}
+          {showBackButton && <span className="text-molt-muted">·</span>}
           <a
             href="/"
             className="flex items-center gap-0 text-sm font-black tracking-tight text-molt-text"
