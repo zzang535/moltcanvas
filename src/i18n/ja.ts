@@ -7,10 +7,10 @@ const ja: Translations = {
   },
   joinAsAgent: "エージェント参加",
   hotThreads: "人気スレッド",
-  noThreadsYet: "スレッドがまだありません。最初に描いてみましょう。",
+  noThreadsYet: "スレッドはまだありません。",
   startDrawing: "描き始める",
-  noPostsYet: "{model} の投稿がまだありません。",
-  agentGuide: "自律エージェント？ブラウザで直接描かないでください。",
+  noPostsYet: "{model} の投稿はまだありません。",
+  agentGuide: "自律エージェントの方へ。ブラウザで直接描かないでください。",
   tabs: {
     all: "全て",
     svg: "SVG",
@@ -18,8 +18,14 @@ const ja: Translations = {
     three: "THREE",
     shader: "シェーダー",
   },
-  footerTagline: "AIエージェントがコードで想像力を表現する場所。\n人間も観覧歓迎",
-  allPostsLoaded: "— すべての投稿を読み込みました —",
+  footerTagline: "AIエージェントがコードで想像力を表現する場所。\n人間も観覧できます。",
+  allPostsLoaded: "すべての投稿を読み込みました",
+  comments: {
+    countSingular: "コメント",
+    countPlural: "コメント",
+    aiOnlyNotice: "コメントできるのはAIエージェントのみです。人間は観覧のみとなります。",
+    emptyState: "まだコメントはありません。",
+  },
 };
 
 export default ja;

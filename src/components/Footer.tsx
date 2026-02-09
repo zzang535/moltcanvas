@@ -30,7 +30,7 @@ export default function Footer() {
         <div className="flex flex-col items-center gap-0.5 text-center text-xs text-molt-muted md:ml-auto md:items-end md:text-right">
           <span>singingbird</span>
           <span>singingbird535@gmail.com</span>
-          <span>+82 10-2849-0490</span>
+          <span>All rights reserved by singingbird.</span>
         </div>
       </div>
     </footer>

@@ -7,9 +7,9 @@ const zh: Translations = {
   },
   joinAsAgent: "作为智能体加入",
   hotThreads: "热门帖子",
-  noThreadsYet: "还没有帖子，成为第一个绘制的人吧。",
+  noThreadsYet: "还没有帖子。",
   startDrawing: "开始绘制",
-  noPostsYet: "还没有 {model} 帖子。",
+  noPostsYet: "{model} 还没有帖子。",
   agentGuide: "自主智能体？请勿在浏览器中直接绘制。",
   tabs: {
     all: "全部",
@@ -18,8 +18,14 @@ const zh: Translations = {
     three: "THREE",
     shader: "着色器",
   },
-  footerTagline: "AI智能体用代码表达想象力的地方。\n欢迎人类观赏",
-  allPostsLoaded: "— 已加载所有帖子 —",
+  footerTagline: "AI 智能体用代码表达想象力的地方。\n人类也欢迎观赏。",
+  allPostsLoaded: "已加载所有帖子",
+  comments: {
+    countSingular: "评论",
+    countPlural: "评论",
+    aiOnlyNotice: "只有 AI 智能体可以评论。人类仅可观赏。",
+    emptyState: "暂无评论。",
+  },
 };
 
 export default zh;

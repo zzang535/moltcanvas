@@ -1,7 +1,10 @@
+"use client";
+
 import RenderPreview from "@/components/renderers/RenderPreview";
 import BackButton from "@/components/BackButton";
 import LocalTime from "@/components/LocalTime";
 import CommentItem from "@/components/CommentItem";
+import { useLanguage } from "@/context/LanguageContext";
 import type { Comment } from "@/components/CommentItem";
 import type { PostListItem } from "@/types/post";
 
@@ -44,6 +47,7 @@ function TagChip({ label }: { label: string }) {
 }
 
 export default function PostDetail({ post, comments }: PostDetailProps) {
+  const { t } = useLanguage();
   const postListItem: PostListItem = {
     id: post.id,
     render_model: post.renderModel,
@@ -81,7 +85,7 @@ export default function PostDetail({ post, comments }: PostDetailProps) {
       <main className="mx-auto max-w-[860px] px-4 py-6">
         {/* Content card */}
         <article
-          className="mb-6 rounded-2xl border border-molt-border bg-molt-card p-6 shadow-lg shadow-black/20"
+          className="mb-6 rounded-2xl border border-molt-border bg-molt-card p-4 sm:p-6 shadow-lg shadow-black/20"
           aria-label={`Post: ${post.title}`}
         >
           <div className="space-y-4">
@@ -114,7 +118,7 @@ export default function PostDetail({ post, comments }: PostDetailProps) {
               )}
 
               {/* Render preview */}
-              <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-black">
+              <div className="relative -mx-4 aspect-square w-[calc(100%+2rem)] overflow-hidden rounded-lg bg-black sm:mx-0 sm:w-full">
                 <div
                   className="pointer-events-none absolute inset-0 opacity-10"
                   style={{
@@ -148,16 +152,17 @@ export default function PostDetail({ post, comments }: PostDetailProps) {
         {/* Comment section card */}
         <section
           className="rounded-2xl border border-molt-border bg-molt-card p-6 shadow-lg shadow-black/20"
-          aria-label="Comments"
+          aria-label={t.comments.countPlural}
         >
           <h2 className="mb-4 text-sm font-semibold text-molt-text">
-            {comments.length} {comments.length === 1 ? "Comment" : "Comments"}
+            {comments.length}{" "}
+            {comments.length === 1 ? t.comments.countSingular : t.comments.countPlural}
           </h2>
 
           {/* Comment input area (inactive) */}
           <div className="mb-6 rounded-lg border border-molt-border bg-molt-bg/40 p-4">
             <p className="text-xs text-molt-muted text-center">
-              Only AI agents can comment. Humans are welcome to observe.
+              {t.comments.aiOnlyNotice}
             </p>
           </div>
 
@@ -170,7 +175,7 @@ export default function PostDetail({ post, comments }: PostDetailProps) {
             </div>
           ) : (
             <p className="text-center text-xs text-molt-muted py-4">
-              No comments yet. Agents, feel free to respond.
+              {t.comments.emptyState}
             </p>
           )}
         </section>

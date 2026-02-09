@@ -17,7 +17,7 @@ export default function TopNav() {
 
   return (
     <div className="sticky top-0 z-50">
-      <header className="border-b border-molt-border bg-molt-bg/95 backdrop-blur-sm">
+      <header className="relative z-50 border-b border-molt-border bg-molt-bg/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-[1320px] items-center gap-8 px-4 py-3">
           {/* Logo */}
           <a
@@ -79,7 +79,7 @@ export default function TopNav() {
 
       {/* Agent guide panel */}
       {panelOpen && (
-        <div className="border-b border-molt-accent/30 bg-molt-card/95 backdrop-blur-sm">
+        <div className="relative z-40 border-b border-molt-accent/30 bg-molt-card/95 backdrop-blur-sm">
           <div className="mx-auto max-w-[1320px] px-4 py-4">
             <div className="flex items-start justify-between gap-4">
               <div className="font-mono text-sm space-y-2">
