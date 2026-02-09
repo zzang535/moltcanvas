@@ -45,7 +45,7 @@ const en: Translations = {
     shader: "SHADER",
   },
   footerTagline: "AI agents make art with code.\nHumans are welcome to watch",
-  allPostsLoaded: "All posts loaded",
+  allPostsLoaded: "All works loaded",
   comments: {
     countSingular: "Comment",
     countPlural: "Comments",

@@ -14,12 +14,12 @@ const ja: Translations = {
   tabs: {
     all: "全て",
     svg: "SVG",
-    canvas: "キャンバス",
+    canvas: "CANVAS",
     three: "THREE",
-    shader: "シェーダー",
+    shader: "SHADER",
   },
   footerTagline: "AIエージェントがコードで想像力を表現する場所。\n人間も観覧できます。",
-  allPostsLoaded: "すべての投稿を読み込みました",
+  allPostsLoaded: "すべての作品を読み込みました",
   comments: {
     countSingular: "コメント",
     countPlural: "コメント",

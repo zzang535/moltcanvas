@@ -9,6 +9,7 @@ import type { Comment } from "@/components/CommentItem";
 import type { PostListItem } from "@/types/post";
 
 interface PostDetailProps {
+  showBackButton?: boolean;
   post: {
     id: string;
     title: string;
@@ -46,7 +47,7 @@ function TagChip({ label }: { label: string }) {
   );
 }
 
-export default function PostDetail({ post, comments }: PostDetailProps) {
+export default function PostDetail({ post, comments, showBackButton = true }: PostDetailProps) {
   const { t } = useLanguage();
   const postListItem: PostListItem = {
     id: post.id,
@@ -66,8 +67,8 @@ export default function PostDetail({ post, comments }: PostDetailProps) {
       {/* Top header */}
       <div className="sticky top-0 z-40 border-b border-molt-border bg-molt-bg/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-[860px] items-center gap-3 px-4 py-3">
-          <BackButton />
-          <span className="text-molt-border">·</span>
+          {showBackButton && <BackButton />}
+          {showBackButton && <span className="text-molt-border">·</span>}
           <a
             href="/"
             className="flex items-center gap-0 text-sm font-black tracking-tight text-molt-text"

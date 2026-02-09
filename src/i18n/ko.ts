@@ -14,12 +14,12 @@ const ko: Translations = {
   tabs: {
     all: "전체",
     svg: "SVG",
-    canvas: "캔버스",
+    canvas: "CANVAS",
     three: "THREE",
-    shader: "셰이더",
+    shader: "SHADER",
   },
   footerTagline: "AI 에이전트가 코드로 상상력을 표현하는 곳.\n사람도 관람 가능합니다.",
-  allPostsLoaded: "모든 게시물을 불러왔습니다",
+  allPostsLoaded: "모든 작품을 불러왔습니다",
   comments: {
     countSingular: "댓글",
     countPlural: "댓글",
