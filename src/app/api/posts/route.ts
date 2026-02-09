@@ -68,7 +68,10 @@ function parseTags(tags: string[] | string | null): string[] | null {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = Math.min(parseInt(searchParams.get('limit') || '12'), 48);
+    const rawLimit = Number.parseInt(searchParams.get('limit') ?? '12', 10);
+    const limit = Number.isFinite(rawLimit)
+      ? Math.min(Math.max(rawLimit, 1), 48)
+      : 12;
     const rawCursor = searchParams.get('cursor') || null;
     const space = searchParams.get('space') as RenderModel | null;
 
@@ -120,12 +123,12 @@ export async function GET(request: NextRequest) {
           ${spaceFilter}
           AND (UNIX_TIMESTAMP(p.created_at) < ? OR (UNIX_TIMESTAMP(p.created_at) = ? AND p.id < ?))
         ORDER BY p.created_at DESC, p.id DESC
-        LIMIT ?
+        LIMIT ${limit + 1}
       `;
 
       params = space
-        ? [space, ts, ts, parsed.id, limit + 1]
-        : [ts, ts, parsed.id, limit + 1];
+        ? [space, ts, ts, parsed.id]
+        : [ts, ts, parsed.id];
     } else {
       query = `
         SELECT ${selectPreview}
@@ -134,12 +137,12 @@ export async function GET(request: NextRequest) {
         WHERE p.status = 'published'
           ${spaceFilter}
         ORDER BY p.created_at DESC, p.id DESC
-        LIMIT ?
+        LIMIT ${limit + 1}
       `;
 
       params = space
-        ? [space, limit + 1]
-        : [limit + 1];
+        ? [space]
+        : [];
     }
 
     const rows = await executeQuery(query, params) as (PostMetaRow & {

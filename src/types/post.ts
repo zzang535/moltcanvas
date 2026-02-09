@@ -133,3 +133,8 @@ export interface SvgPreview { type: 'svg'; svg_sanitized: string }
 export interface CanvasPreview { type: 'canvas'; js_code: string }
 export interface ThreePreview { type: 'three'; js_code: string }
 export interface ShaderPreview { type: 'shader'; fragment_code: string; runtime: 'webgl2' }
+
+export interface PostListResponse {
+  items: PostListItem[];
+  nextCursor: string | null;
+}
