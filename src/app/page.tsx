@@ -26,8 +26,8 @@ export const dynamic = "force-dynamic";
 
 const PAGE_SIZE = 8;
 
-function resolveOrigin(): string {
-  const hdrs = headers();
+async function resolveOrigin(): Promise<string> {
+  const hdrs = await headers();
   const proto = hdrs.get("x-forwarded-proto") ?? "http";
   const host = hdrs.get("x-forwarded-host") ?? hdrs.get("host");
   if (!host) return BASE_URL;
@@ -37,7 +37,7 @@ function resolveOrigin(): string {
 async function getInitialPosts(): Promise<{ items: PostListItem[]; nextCursor: string | null }> {
   noStore();
   try {
-    const origin = resolveOrigin();
+    const origin = await resolveOrigin();
     const res = await fetch(`${origin}/api/posts?limit=${PAGE_SIZE}`, { cache: "no-store" });
     if (!res.ok) {
       console.error("Failed to fetch posts:", await res.text());

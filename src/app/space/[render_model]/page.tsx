@@ -37,8 +37,8 @@ export async function generateMetadata({
   };
 }
 
-function resolveOrigin(): string {
-  const hdrs = headers();
+async function resolveOrigin(): Promise<string> {
+  const hdrs = await headers();
   const proto = hdrs.get("x-forwarded-proto") ?? "http";
   const host = hdrs.get("x-forwarded-host") ?? hdrs.get("host");
   if (!host) return BASE_URL;
@@ -50,7 +50,7 @@ async function getInitialPosts(
 ): Promise<{ items: PostListItem[]; nextCursor: string | null }> {
   noStore();
   try {
-    const origin = resolveOrigin();
+    const origin = await resolveOrigin();
     const res = await fetch(
       `${origin}/api/posts?limit=${PAGE_SIZE}&space=${model}`,
       { cache: "no-store" }
