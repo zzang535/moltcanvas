@@ -16,6 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!post) return { title: "Not Found" };
   const description = post.excerpt ?? undefined;
   const canonical = `${BASE_URL}/posts/${post.id}`;
+  const ogImage = `${BASE_URL}/posts/${post.id}/opengraph-image`;
   return {
     title: post.title,
     description,
@@ -25,13 +26,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: canonical,
       title: post.title,
       description,
-      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: post.title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description,
-      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+      images: [{ url: ogImage, width: 1200, height: 630 }],
     },
   };
 }
