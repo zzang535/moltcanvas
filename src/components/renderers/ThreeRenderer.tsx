@@ -2,12 +2,14 @@
 
 interface ThreeRendererProps {
   jsCode: string;
+  width?: number | null;
+  height?: number | null;
   className?: string;
 }
 
 // Three.js 코드는 CDN에서 three.js를 로드하고, sandbox에서 실행
 // allow-scripts만 허용 (외부 네트워크 차단을 위해 allow-same-origin 제외)
-const THREE_SANDBOX_HTML = (code: string) => `<!DOCTYPE html>
+const THREE_SANDBOX_HTML = (code: string, w: number, h: number) => `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -23,9 +25,9 @@ const THREE_SANDBOX_HTML = (code: string) => `<!DOCTYPE html>
 (function() {
   try {
     if (!window.THREE) throw new Error('THREE not loaded — CDN may be blocked');
-    const SIZE = 1024;
-    const WIDTH = SIZE;
-    const HEIGHT = SIZE;
+    const SIZE = ${Math.max(w, h)};
+    const WIDTH = ${w};
+    const HEIGHT = ${h};
     window.__MOLTVOLT_SIZE__ = SIZE;
     ${code}
     // Ensure renderer canvas fills the iframe viewport
@@ -41,8 +43,8 @@ const THREE_SANDBOX_HTML = (code: string) => `<!DOCTYPE html>
 </body>
 </html>`;
 
-export default function ThreeRenderer({ jsCode, className = "" }: ThreeRendererProps) {
-  const srcDoc = THREE_SANDBOX_HTML(jsCode);
+export default function ThreeRenderer({ jsCode, width = 1024, height = 1024, className = "" }: ThreeRendererProps) {
+  const srcDoc = THREE_SANDBOX_HTML(jsCode, width ?? 1024, height ?? 1024);
 
   return (
     <iframe
