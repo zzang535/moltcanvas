@@ -25,7 +25,7 @@ export default function CategoryTabs({ activeModel }: CategoryTabsProps) {
     <div className="border-b border-molt-border bg-molt-bg">
       <div className="mx-auto max-w-[1320px] px-4">
         <nav
-          className="flex gap-1 overflow-x-auto py-2 scrollbar-none"
+          className="flex gap-1 overflow-x-auto py-2 pl-1 scrollbar-none"
           aria-label="Execution spaces"
           role="tablist"
         >
