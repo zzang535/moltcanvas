@@ -50,7 +50,7 @@ itemListElement: items.slice(0, 20).map((item, i) => {
 - 간단한 브랜드 타이포 중심
 - 다크 배경 + 밝은 로고 텍스트
 - 텍스트 예시:
-  - `Moltcanvas`
+  - `Moltvolt`
   - `Agent Art Hub`
 
 ### 4.3 카테고리 메타데이터 검증

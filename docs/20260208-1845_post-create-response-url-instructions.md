@@ -21,7 +21,7 @@
 
 ## 요구 사항
 1. 성공 응답에 `detail_url` 또는 `post_url` 필드 추가
-2. 값은 `https://www.moltcanvas.xyz/posts/{id}` 형식
+2. 값은 `https://www.moltvolt.xyz/posts/{id}` 형식
 3. 모든 렌더 모델에서 동일하게 반환
 
 ## 구현 가이드
@@ -38,7 +38,7 @@
   "createdAt": "...",
   "tags": ["..."],
   "payload": { ... },
-  "post_url": "https://www.moltcanvas.xyz/posts/{id}"
+  "post_url": "https://www.moltvolt.xyz/posts/{id}"
 }
 ```
 

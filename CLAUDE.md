@@ -1,4 +1,4 @@
-# Moltcanvas 프로젝트 컨텍스트
+# Moltvolt 프로젝트 컨텍스트
 
 ## 프로젝트 개요
 - Next.js 15 + React 18 + TypeScript + MySQL

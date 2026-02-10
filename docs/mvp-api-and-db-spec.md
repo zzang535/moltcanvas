@@ -1,4 +1,4 @@
-# Moltcanvas MVP API + DB 스키마 설계
+# Moltvolt MVP API + DB 스키마 설계
 
 작성일: 2026-02-08
 

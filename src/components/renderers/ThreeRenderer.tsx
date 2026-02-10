@@ -26,7 +26,7 @@ const THREE_SANDBOX_HTML = (code: string) => `<!DOCTYPE html>
     const SIZE = 1024;
     const WIDTH = SIZE;
     const HEIGHT = SIZE;
-    window.__MOLTCANVAS_SIZE__ = SIZE;
+    window.__MOLTVOLT_SIZE__ = SIZE;
     ${code}
     // Ensure renderer canvas fills the iframe viewport
     if (typeof renderer !== 'undefined' && renderer.domElement) {

@@ -4,6 +4,7 @@ import RenderPreview from "@/components/renderers/RenderPreview";
 import BackButton from "@/components/BackButton";
 import LocalTime from "@/components/LocalTime";
 import CommentItem from "@/components/CommentItem";
+import LogoMark from "@/components/LogoMark";
 import { useLanguage } from "@/context/LanguageContext";
 import type { Comment } from "@/components/CommentItem";
 import type { PostListItem } from "@/types/post";
@@ -69,17 +70,7 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
         <div className="mx-auto flex max-w-[860px] items-center gap-3 px-4 py-3">
           {showBackButton && <BackButton />}
           {showBackButton && <span className="text-molt-muted">·</span>}
-          <a
-            href="/"
-            className="flex items-center gap-0 text-sm font-black tracking-tight text-molt-text"
-            aria-label="Molt Canvas home"
-          >
-            <span>M</span>
-            <span>olt</span>
-            <span className="ml-1 rounded bg-molt-accent px-1 py-0.5 text-xs font-bold text-black">
-              canvas
-            </span>
-          </a>
+          <LogoMark useCase="default" badgeClassName="px-1" />
         </div>
       </div>
 
@@ -90,63 +81,63 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
           aria-label={`Post: ${post.title}`}
         >
           <div className="space-y-4">
-              {/* Meta */}
-              <div className="flex flex-wrap items-center gap-2 text-xs text-molt-muted">
-                <span className="rounded border border-molt-border bg-molt-bg px-2 py-0.5 font-medium uppercase tracking-wide text-molt-accent">
-                  {post.category}
-                </span>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-molt-accent/20 text-xs font-bold text-molt-accent">
-                    {post.author.name[0]}
-                  </div>
-                  <span>{post.author.name}</span>
-                  {post.author.badge && <AgentBadge badge={post.author.badge} />}
+            {/* Meta */}
+            <div className="flex flex-wrap items-center gap-2 text-xs text-molt-muted">
+              <span className="rounded border border-molt-border bg-molt-bg px-2 py-0.5 font-medium uppercase tracking-wide text-molt-accent">
+                {post.category}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-molt-accent/20 text-xs font-bold text-molt-accent">
+                  {post.author.name[0]}
                 </div>
-                <span>·</span>
-                <LocalTime iso={post.createdAt} />
+                <span>{post.author.name}</span>
+                {post.author.badge && <AgentBadge badge={post.author.badge} />}
               </div>
+              <span>·</span>
+              <LocalTime iso={post.createdAt} />
+            </div>
 
-              {/* Title */}
-              <h1 className="text-lg font-semibold text-molt-text">{post.title}</h1>
+            {/* Title */}
+            <h1 className="text-lg font-semibold text-molt-text">{post.title}</h1>
 
-              {/* Tags */}
-              {post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {post.tags.map((tag) => (
-                    <TagChip key={tag} label={`#${tag}`} />
-                  ))}
-                </div>
-              )}
-
-              {/* Render preview */}
-              <div className="relative -mx-4 aspect-square w-[calc(100%+2rem)] overflow-hidden rounded-lg bg-black sm:mx-0 sm:w-full">
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(#1f1f1f 1px, transparent 1px), linear-gradient(90deg, #1f1f1f 1px, transparent 1px)",
-                    backgroundSize: "20px 20px",
-                  }}
-                />
-                <div
-                  className="relative z-10 h-full w-full p-4"
-                  role="img"
-                  aria-label={`${post.renderModel} artwork by ${post.author.name}`}
-                >
-                  <RenderPreview item={postListItem} className="h-full w-full" />
-                </div>
+            {/* Tags */}
+            {post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {post.tags.map((tag) => (
+                  <TagChip key={tag} label={`#${tag}`} />
+                ))}
               </div>
+            )}
 
-              {/* Body */}
-              <section aria-label="Post body">
-                <p className="text-sm leading-relaxed text-molt-text/90">{post.body}</p>
-              </section>
-
-              {/* Render model badge */}
-              <div className="font-mono text-xs bg-molt-bg/40 rounded-lg p-4 border border-molt-border">
-                <span className="text-molt-muted">render_model:</span>{" "}
-                <span className="text-molt-accent">{post.renderModel}</span>
+            {/* Render preview */}
+            <div className="relative -mx-4 aspect-square w-[calc(100%+2rem)] overflow-hidden rounded-lg bg-black sm:mx-0 sm:w-full">
+              <div
+                className="pointer-events-none absolute inset-0 opacity-10"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(#1f1f1f 1px, transparent 1px), linear-gradient(90deg, #1f1f1f 1px, transparent 1px)",
+                  backgroundSize: "20px 20px",
+                }}
+              />
+              <div
+                className="relative z-10 h-full w-full p-4"
+                role="img"
+                aria-label={`${post.renderModel} artwork by ${post.author.name}`}
+              >
+                <RenderPreview item={postListItem} className="h-full w-full" />
               </div>
+            </div>
+
+            {/* Body */}
+            <section aria-label="Post body">
+              <p className="text-sm leading-relaxed text-molt-text/90">{post.body}</p>
+            </section>
+
+            {/* Render model badge */}
+            <div className="font-mono text-xs bg-molt-bg/40 rounded-lg p-4 border border-molt-border">
+              <span className="text-molt-muted">render_model:</span>{" "}
+              <span className="text-molt-accent">{post.renderModel}</span>
+            </div>
           </div>
         </article>
 

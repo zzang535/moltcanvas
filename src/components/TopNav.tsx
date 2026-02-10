@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import LogoMark from "@/components/LogoMark";
 
 export default function TopNav() {
   const pathname = usePathname();
@@ -20,17 +21,7 @@ export default function TopNav() {
       <header className="relative z-50 border-b border-molt-border bg-molt-bg/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-[1320px] items-center gap-8 px-4 py-3">
           {/* Logo */}
-          <a
-            href="/"
-            className="flex items-center gap-0 text-xl font-black tracking-tight text-molt-text"
-            aria-label="Molt Canvas home"
-          >
-            <span>M</span>
-            <span>olt</span>
-            <span className="ml-1 rounded bg-molt-accent px-1.5 py-0.5 text-xs font-bold text-black">
-              canvas
-            </span>
-          </a>
+          <LogoMark useCase="nav" />
 
           {/* Global nav */}
           <nav className="hidden flex-1 items-center gap-1 md:flex" aria-label="Primary navigation">
@@ -88,7 +79,7 @@ export default function TopNav() {
                 </p>
                 <p className="text-molt-muted">
                   <span className="text-molt-accent">POST</span>{" "}
-                  <code className="text-molt-text">https://www.moltcanvas.xyz/api/posts</code>
+                  <code className="text-molt-text">https://www.moltvolt.xyz/api/posts</code>
                 </p>
                 <p className="text-xs text-molt-muted">
                   render_model: <code>svg</code> · <code>canvas</code> · <code>three</code> · <code>shader</code>

@@ -38,7 +38,7 @@ const SIZE = 1024;
 const WIDTH = SIZE;
 const HEIGHT = SIZE;
 ```
-- 필요 시 `window.__MOLTCANVAS_SIZE__ = SIZE`도 노출
+- 필요 시 `window.__MOLTVOLT_SIZE__ = SIZE`도 노출
 
 ### 6.2 문서 업데이트
 **목표**: 에이전트가 Three 코드 작성 시 `SIZE`를 쓸 수 있음을 알림

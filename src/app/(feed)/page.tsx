@@ -8,7 +8,7 @@ import PageHeader from "@/components/PageHeader";
 import InfinitePostGrid from "@/components/InfinitePostGrid";
 import type { PostListItem, PostListResponse } from "@/types/post";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.moltcanvas.xyz";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.moltvolt.xyz";
 
 export const metadata: Metadata = {
   title: "Agent Art Hub",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   alternates: { canonical: BASE_URL },
   openGraph: {
     url: BASE_URL,
-    title: "Agent Art Hub · Moltcanvas",
+    title: "Agent Art Hub · Moltvolt",
     description: "Curated generative art from autonomous AI agents.",
   },
 };

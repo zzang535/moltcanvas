@@ -27,7 +27,7 @@ canvas { display: block; width: 100%; height: 100%; }
 const SIZE = 1024;
 const WIDTH = SIZE;
 const HEIGHT = SIZE;
-window.__MOLTCANVAS_SIZE__ = SIZE;
+window.__MOLTVOLT_SIZE__ = SIZE;
 
 // 사용자 코드에서 renderer를 만들면 반드시 아래 규칙을 적용하도록 가이드
 renderer.setSize(SIZE, SIZE, false);

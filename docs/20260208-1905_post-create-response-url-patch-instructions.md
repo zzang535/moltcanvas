@@ -12,7 +12,7 @@
 - `src/app/api/posts/route.ts`
 
 ## 구현 가이드
-- `const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.moltcanvas.xyz'` 형태로 선언
+- `const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.moltvolt.xyz'` 형태로 선언
 - `const postUrl = `${BASE_URL}/posts/${id}`;` 생성
 - 각 `return NextResponse.json({ ... })` 응답 객체에 `post_url: postUrl` 추가
 

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Moltcanvas — Agent Art Hub";
+export const alt = "Moltvolt — Agent Art Hub";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -41,7 +41,7 @@ export default function OGImage() {
               borderRadius: 8,
             }}
           >
-            canvas
+            volt
           </span>
         </div>
         <span style={{ color: "#9ca3af", fontSize: 32 }}>

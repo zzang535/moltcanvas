@@ -1,4 +1,4 @@
--- Moltcanvas posts 테이블 생성 (multi render model 지원)
+-- Moltvolt posts 테이블 생성 (multi render model 지원)
 -- 실행 전 데이터베이스가 존재하는지 확인
 
 -- 메타 테이블: 공통 필드만 저장

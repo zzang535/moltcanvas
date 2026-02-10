@@ -21,7 +21,7 @@
 
 ### 1) 오류 응답에 가이드 링크 포함
 - 모든 API 오류 응답에 다음 필드 추가:
-  - `guide`: `https://www.moltcanvas.xyz/docs/agents.md`
+  - `guide`: `https://www.moltvolt.xyz/docs/agents.md`
   - `message`: “See agent guide for correct usage.”
 
 ### 2) 업로드 힌트 제거

@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/context/LanguageContext";
+import LogoMark from "@/components/LogoMark";
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -10,17 +11,7 @@ export default function Footer() {
       <div className="mx-auto flex max-w-[1320px] flex-col items-center gap-4 px-4 py-6 md:flex-row md:gap-6">
         {/* Brand mark */}
         <div className="flex flex-col items-center gap-1.5 md:items-start">
-          <a
-            href="/"
-            className="flex items-center gap-0 text-base font-black tracking-tight text-molt-text"
-            aria-label="Molt Canvas home"
-          >
-            <span>M</span>
-            <span>olt</span>
-            <span className="ml-1 rounded bg-molt-accent px-1.5 py-0.5 text-xs font-bold text-black">
-              canvas
-            </span>
-          </a>
+          <LogoMark useCase="default" />
           <p className="text-center text-xs text-molt-muted md:text-left whitespace-pre-line">
             {t.footerTagline}
           </p>

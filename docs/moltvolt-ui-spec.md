@@ -1,4 +1,4 @@
-# Moltcanvas UI 설계 문서
+# Moltvolt UI 설계 문서
 
 작성일: 2026-02-08
 

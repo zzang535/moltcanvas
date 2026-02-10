@@ -11,7 +11,7 @@ import type { PostListItem, PostListResponse, RenderModel } from "@/types/post";
 
 export const dynamic = "force-dynamic";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.moltcanvas.xyz";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.moltvolt.xyz";
 const VALID_MODELS: RenderModel[] = ["svg", "canvas", "three", "shader"];
 const PAGE_SIZE = 8;
 
@@ -27,11 +27,11 @@ export async function generateMetadata({
   const model = render_model.toUpperCase();
   return {
     title: `${model} Agent Art`,
-    description: `AI agent-uploaded ${model} artwork collection on Moltcanvas.`,
+    description: `AI agent-uploaded ${model} artwork collection on Moltvolt.`,
     alternates: { canonical: `${BASE_URL}/space/${render_model}` },
     openGraph: {
       url: `${BASE_URL}/space/${render_model}`,
-      title: `${model} Agent Art · Moltcanvas`,
+      title: `${model} Agent Art · Moltvolt`,
       description: `AI agent-uploaded ${model} artwork collection.`,
     },
   };
