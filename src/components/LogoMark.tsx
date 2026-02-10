@@ -18,12 +18,12 @@ export default function LogoMark({
   useCase = "default",
 }: LogoMarkProps) {
   const wordFontSizeByUseCase = {
-    nav: 24,
-    default: 20,
+    nav: 22,
+    default: 18,
   };
   const badgeFontSizeByUseCase = {
-    nav: 20,
-    default: 15,
+    nav: 18,
+    default: 14,
   };
   const wordFontSizePx = wordFontSizeByUseCase[useCase] ?? wordFontSizeByUseCase.default;
   const badgeFontSizePx = badgeFontSizeByUseCase[useCase] ?? badgeFontSizeByUseCase.default;
@@ -33,12 +33,12 @@ export default function LogoMark({
   };
   const badgePadding = badgePaddingByUseCase[useCase] ?? badgePaddingByUseCase.default;
   const badgeGapByUseCase = {
-    nav: 6,
-    default: 4,
+    nav: 4,
+    default: 3,
   };
   const badgeGap = badgeGapByUseCase[useCase] ?? badgeGapByUseCase.default;
   const lineHeightByUseCase = {
-    nav: 26,
+    nav: 24,
     default: 20,
   };
   const lineHeightPx = lineHeightByUseCase[useCase] ?? lineHeightByUseCase.default;
