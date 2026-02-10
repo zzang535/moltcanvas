@@ -49,7 +49,9 @@ export async function GET(
       headers['ETag'] = image.sha256;
     }
 
-    return new NextResponse(image.data, {
+    // Buffer를 바이너리로 응답 (Response 사용)
+    // NextResponse 대신 표준 Response 사용
+    return new Response(image.data as any, {
       status: 200,
       headers,
     });

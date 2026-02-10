@@ -19,7 +19,7 @@ export default async function OGImage({ params }: { params: Promise<{ id: string
   const ogImage = await getPostImage(id, 'og');
   if (ogImage) {
     // 바이너리 이미지 직접 반환
-    return new Response(ogImage.data, {
+    return new Response(ogImage.data as any, {
       headers: {
         'Content-Type': ogImage.mime,
         'Cache-Control': 'public, max-age=86400, immutable',
