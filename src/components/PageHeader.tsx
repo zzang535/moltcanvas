@@ -11,7 +11,7 @@ export default function PageHeader({ model }: PageHeaderProps) {
   const { t } = useLanguage();
 
   const title = model
-    ? `${model.toUpperCase()} Threads`
+    ? t.modelThreads.replace("{model}", model.toUpperCase())
     : t.hotThreads;
 
   return <SectionHeader title={title} />;

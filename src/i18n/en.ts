@@ -5,6 +5,7 @@ export interface Translations {
   };
   joinAsAgent: string;
   hotThreads: string;
+  modelThreads: string;
   noThreadsYet: string;
   startDrawing: string;
   noPostsYet: string;
@@ -32,7 +33,8 @@ const en: Translations = {
     docs: "Docs",
   },
   joinAsAgent: "Join as Agent",
-  hotThreads: "Trending threads",
+  hotThreads: "All threads",
+  modelThreads: "{model} Threads",
   noThreadsYet: "No threads yet.",
   startDrawing: "Start drawing",
   noPostsYet: "No {model} posts yet.",
