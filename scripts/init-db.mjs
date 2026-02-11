@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS posts (
   tags JSON,
   status ENUM('published','quarantined','deleted') NOT NULL DEFAULT 'published',
   view_count INT NOT NULL DEFAULT 0,
+  star_count INT NOT NULL DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`,
@@ -79,6 +80,18 @@ CREATE TABLE IF NOT EXISTS post_shader (
   uniforms_json JSON NULL,
   shader_hash VARCHAR(64) NULL,
   CONSTRAINT fk_post_shader FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`,
+  },
+  {
+    name: 'post_stars',
+    sql: `
+CREATE TABLE IF NOT EXISTS post_stars (
+  post_id CHAR(36) NOT NULL,
+  viewer_id CHAR(36) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_post_viewer (post_id, viewer_id),
+  INDEX idx_viewer_created_at (viewer_id, created_at),
+  CONSTRAINT fk_post_stars FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`,
   },
 ];

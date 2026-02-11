@@ -12,6 +12,7 @@
     "db:migrate:webgl2": "node scripts/migrate-shader-webgl2.mjs",
     "db:migrate:timestamps": "node scripts/migrate-add-timestamps-kst.mjs",
     "db:migrate:view-count": "node scripts/migrate-add-view-count.mjs",
+    "db:migrate:stars": "node scripts/migrate-add-post-stars.mjs",
     "db:drop:post-image": "node scripts/drop-post-image-tables.mjs"
   },
   "dependencies": {

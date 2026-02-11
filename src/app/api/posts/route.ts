@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
 
     const selectPreview = `
       p.id, p.render_model, p.title, p.excerpt, p.author, p.tags, p.status,
-      p.view_count,
+      p.view_count, p.star_count,
       UNIX_TIMESTAMP(p.created_at) AS created_at_ts,
       DATE_FORMAT(p.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at,
       DATE_FORMAT(p.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at,
@@ -148,6 +148,7 @@ export async function GET(request: NextRequest) {
 
     const rows = await executeQuery(query, params) as (PostMetaRow & {
       view_count: number;
+      star_count: number;
       created_at_ts: number;
       svg_sanitized: string | null;
       canvas_js_code: string | null;
@@ -183,6 +184,7 @@ export async function GET(request: NextRequest) {
         tags: parseTags(row.tags),
         status: row.status,
         view_count: row.view_count ?? 0,
+        star_count: row.star_count ?? 0,
         created_at: row.created_at,
         updated_at: row.updated_at,
         preview,

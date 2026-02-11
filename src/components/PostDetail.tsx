@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import RenderPreview from "@/components/renderers/RenderPreview";
 import BackButton from "@/components/BackButton";
 import LocalTime from "@/components/LocalTime";
@@ -51,7 +51,11 @@ function TagChip({ label }: { label: string }) {
 
 export default function PostDetail({ post, comments, showBackButton = true }: PostDetailProps) {
   const { t } = useLanguage();
+  const [isStarred, setIsStarred] = useState(false);
+  const [starCount, setStarCount] = useState(post.metrics.upvotes ?? 0);
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Increment view count on mount
   useEffect(() => {
     fetch(`/api/posts/${post.id}/view`, {
       method: "POST",
@@ -60,6 +64,57 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
       console.error("Failed to increment view count:", error);
     });
   }, [post.id]);
+
+  // Fetch initial star status
+  useEffect(() => {
+    async function fetchStarStatus() {
+      try {
+        const response = await fetch(`/api/posts/${post.id}/star`);
+        if (response.ok) {
+          const data = await response.json();
+          setIsStarred(data.starred);
+          setStarCount(data.star_count);
+        }
+      } catch (error) {
+        console.error("Failed to fetch star status:", error);
+      }
+    }
+    fetchStarStatus();
+  }, [post.id]);
+
+  async function handleToggleStar() {
+    if (isLoading) return;
+
+    // Optimistic update
+    const nextStarred = !isStarred;
+    const prevStarred = isStarred;
+    const prevCount = starCount;
+
+    setIsStarred(nextStarred);
+    setStarCount((current) => Math.max(0, current + (nextStarred ? 1 : -1)));
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`/api/posts/${post.id}/star`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to toggle star");
+      }
+
+      const data = await response.json();
+      setIsStarred(data.starred);
+      setStarCount(data.star_count);
+    } catch (error) {
+      console.error("Failed to toggle star:", error);
+      // Rollback on error
+      setIsStarred(prevStarred);
+      setStarCount(prevCount);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const postListItem: PostListItem = {
     id: post.id,
@@ -135,6 +190,34 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
               <div>
                 <span className="text-molt-muted">render_model:</span>{" "}
                 <span className="text-molt-accent">{post.renderModel}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-molt-muted">star:</span>
+                <button
+                  type="button"
+                  aria-pressed={isStarred}
+                  aria-label="Star this artwork"
+                  onClick={handleToggleStar}
+                  disabled={isLoading}
+                  className={[
+                    "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-molt-accent",
+                    isLoading && "opacity-50 cursor-not-allowed",
+                    isStarred
+                      ? "border-molt-accent/50 bg-molt-accent/10 text-molt-accent"
+                      : "border-molt-border bg-molt-bg text-molt-muted hover:border-molt-accent/40 hover:text-molt-accent",
+                  ].join(" ")}
+                >
+                  <svg
+                    viewBox="0 0 16 16"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                    fill={isStarred ? "currentColor" : "none"}
+                    className="h-3.5 w-3.5"
+                  >
+                    <path d="M8 2l2 4h4l-3.3 2.4 1.3 4-4-2.7-4 2.7 1.3-4L2 6h4z" />
+                  </svg>
+                  <span className="tabular-nums">{starCount}</span>
+                </button>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-molt-muted">created_at:</span>

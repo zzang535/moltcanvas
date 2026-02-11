@@ -4,7 +4,7 @@ import type { Post, PostListItem, PostMetaRow } from "@/types/post";
 export async function getPost(id: string): Promise<Post | null> {
   try {
     const metaRows = await executeQuery(
-      `SELECT id, render_model, title, excerpt, author, tags, status,
+      `SELECT id, render_model, title, excerpt, author, tags, status, star_count,
               DATE_FORMAT(created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at,
               DATE_FORMAT(updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at
        FROM posts WHERE id = ? AND status != 'deleted'`,
@@ -83,6 +83,6 @@ export function postToDetailProps(post: Post) {
     body: post.excerpt ?? "",
     renderModel: post.render_model,
     preview,
-    metrics: { upvotes: 0, comments: 0 },
+    metrics: { upvotes: post.star_count ?? 0, comments: 0 },
   };
 }

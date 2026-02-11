@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ThreadCard from "@/components/ThreadCard";
 import { useLanguage } from "@/context/LanguageContext";
-import { readListState, writeListState } from "@/lib/list-state-cache";
 import type { Thread } from "@/data/threads";
 import type { PostListItem, PostListResponse, RenderModel } from "@/types/post";
 
@@ -23,7 +22,7 @@ function toThread(item: PostListItem): Thread {
     tags: Array.isArray(item.tags) ? item.tags : [],
     renderModel: item.render_model,
     preview: item.preview,
-    metrics: { views: item.view_count ?? 0, stars: 0, comments: 0 },
+    metrics: { views: item.view_count ?? 0, stars: item.star_count ?? 0, comments: 0 },
     createdAt: item.created_at,
     category: "",
   };
@@ -62,25 +61,13 @@ export default function InfinitePostGrid({
   space?: RenderModel;
 }) {
   const { t } = useLanguage();
-  const cacheKey = space ? `posts:space:${space}` : "posts:all";
-  const initialCache = readListState(cacheKey);
-  const cachedItems = initialCache?.items ? dedupeItems(initialCache.items) : null;
-  const [items, setItems] = useState<PostListItem[]>(cachedItems ?? initialItems);
+  const [items, setItems] = useState<PostListItem[]>(initialItems);
   const [nextCursor, setNextCursor] = useState<string | null>(
-    initialCache?.nextCursor ?? initialCursor
+    initialCursor
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [canLoadMore, setCanLoadMore] = useState<boolean>(!initialCache);
-  const [restoredFromCache, setRestoredFromCache] = useState<boolean>(Boolean(initialCache));
   const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const restoreScrollRef = useRef<number | null>(initialCache?.scrollY ?? null);
-  const ignoreNextScrollRef = useRef(false);
-  const scrollYRef = useRef<number>(initialCache?.scrollY ?? 0);
-  const latestStateRef = useRef<{ items: PostListItem[]; nextCursor: string | null }>({
-    items: cachedItems ?? initialItems,
-    nextCursor: initialCache?.nextCursor ?? initialCursor,
-  });
 
   const threads = useMemo(() => items.map(toThread), [items]);
 
@@ -130,87 +117,8 @@ export default function InfinitePostGrid({
   }, [isLoading, nextCursor, space]);
 
   useEffect(() => {
-    latestStateRef.current = { items, nextCursor };
-  }, [items, nextCursor]);
-
-  useEffect(() => {
-    if (restoredFromCache) return;
-    const cached = readListState(cacheKey);
-    if (!cached) return;
-    setItems(dedupeItems(cached.items));
-    setNextCursor(cached.nextCursor);
-    setRestoredFromCache(true);
-    setCanLoadMore(false);
-    restoreScrollRef.current = cached.scrollY;
-    scrollYRef.current = cached.scrollY;
-  }, [cacheKey, restoredFromCache]);
-
-  useEffect(() => {
-    const scrollY = restoreScrollRef.current;
-    if (!restoredFromCache || scrollY == null || typeof window === "undefined") return;
-    restoreScrollRef.current = null;
-    ignoreNextScrollRef.current = true;
-    requestAnimationFrame(() => {
-      window.scrollTo(0, scrollY);
-      scrollYRef.current = scrollY;
-      writeListState(cacheKey, {
-        items: latestStateRef.current.items,
-        nextCursor: latestStateRef.current.nextCursor,
-        scrollY,
-        savedAt: Date.now(),
-      });
-      requestAnimationFrame(() => {
-        ignoreNextScrollRef.current = false;
-      });
-      setTimeout(() => {
-        if (window.scrollY === 0 && scrollY > 0) {
-          window.scrollTo(0, scrollY);
-        }
-      }, 80);
-    });
-  }, [restoredFromCache, items.length]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    writeListState(cacheKey, {
-      items,
-      nextCursor,
-      scrollY: scrollYRef.current,
-      savedAt: Date.now(),
-    });
-  }, [cacheKey, items, nextCursor]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    let raf = 0;
-    const onScroll = () => {
-      if (ignoreNextScrollRef.current) {
-        ignoreNextScrollRef.current = false;
-        return;
-      }
-      if (raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const { items: currentItems, nextCursor: currentCursor } = latestStateRef.current;
-        scrollYRef.current = window.scrollY;
-        writeListState(cacheKey, {
-          items: currentItems,
-          nextCursor: currentCursor,
-          scrollY: scrollYRef.current,
-          savedAt: Date.now(),
-        });
-        if (!canLoadMore) setCanLoadMore(true);
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [cacheKey, canLoadMore]);
-
-  useEffect(() => {
     const target = sentinelRef.current;
-    if (!canLoadMore || !target || !nextCursor) return;
+    if (!target || !nextCursor) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -224,7 +132,7 @@ export default function InfinitePostGrid({
 
     observer.observe(target);
     return () => observer.disconnect();
-  }, [loadMore, nextCursor, canLoadMore]);
+  }, [loadMore, nextCursor]);
 
   return (
     <div>
