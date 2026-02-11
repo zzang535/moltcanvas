@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
 import { getPost } from "@/lib/post-detail";
-import { getPostImage } from "@/lib/post-image";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,19 +14,6 @@ function truncate(text: string | null | undefined, max: number) {
 export default async function OGImage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  // 먼저 post_image의 og 이미지가 있는지 확인
-  const ogImage = await getPostImage(id, 'og');
-  if (ogImage) {
-    // 바이너리 이미지 직접 반환
-    return new Response(ogImage.data as any, {
-      headers: {
-        'Content-Type': ogImage.mime,
-        'Cache-Control': 'public, max-age=86400, immutable',
-      },
-    });
-  }
-
-  // 정적 OG 이미지가 없으면 기존 텍스트 기반 OG 생성
   const post = await getPost(id);
   const title = truncate(post?.title ?? "Moltvolt", 80);
   const excerpt = truncate(post?.excerpt ?? "Agent-generated artwork", 120);

@@ -3,7 +3,6 @@ import { createHash, randomUUID } from 'crypto';
 import { revalidatePath } from 'next/cache';
 import { executeQuery } from '@/lib/db';
 import { sanitizeSvg } from '@/lib/svg-sanitize';
-import { enqueueAllImageJobs } from '@/lib/image-job';
 import type {
   CreatePostBody,
   PostListItem,
@@ -14,27 +13,11 @@ import type {
 export const maxDuration = 20;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL!;
-const IS_VERCEL = Boolean(process.env.VERCEL);
-const CAPTURE_MODE = process.env.POST_IMAGE_CAPTURE_MODE ?? (IS_VERCEL ? 'inline' : 'queue');
 const CODE_MAX_BYTES = 500 * 1024; // 500KB (canvas/three/shader)
 const SVG_MAX_BYTES = 200 * 1024; // 200KB
 const SQUARE_SIZE = 1024;
 const TAG_PATTERN = /^[a-z0-9-]+$/;
 const VALID_RENDER_MODELS: RenderModel[] = ['svg', 'canvas', 'three', 'shader'];
-
-async function triggerImageCapture(postId: string) {
-  try {
-    if (CAPTURE_MODE === 'inline') {
-      const { captureAllImagesForPost } = await import('@/lib/capture-post-image');
-      await captureAllImagesForPost(postId, { baseUrl: BASE_URL });
-      return;
-    }
-
-    await enqueueAllImageJobs(postId);
-  } catch (error) {
-    console.error('Image capture trigger failed:', error);
-  }
-}
 
 // Shader static issue detection (WebGL2 / GLSL ES 3.00 requirements)
 function detectShaderIssue(fragment: string, vertex?: string | null) {
@@ -103,7 +86,6 @@ export async function GET(request: NextRequest) {
       LEFT JOIN post_canvas pc ON p.id = pc.post_id AND p.render_model = 'canvas'
       LEFT JOIN post_three pt ON p.id = pt.post_id AND p.render_model = 'three'
       LEFT JOIN post_shader psh ON p.id = psh.post_id AND p.render_model = 'shader'
-      LEFT JOIN post_image pi ON p.id = pi.post_id AND pi.kind = 'thumb'
     `;
 
     const selectPreview = `
@@ -115,8 +97,7 @@ export async function GET(request: NextRequest) {
       pc.js_code AS canvas_js_code,
       pt.js_code AS three_js_code,
       psh.fragment_code,
-      psh.runtime AS shader_runtime,
-      IF(pi.post_id IS NOT NULL, 1, 0) AS has_thumb
+      psh.runtime AS shader_runtime
     `;
 
     let query: string;
@@ -171,7 +152,6 @@ export async function GET(request: NextRequest) {
       three_js_code: string | null;
       fragment_code: string | null;
       shader_runtime: string | null;
-      has_thumb: number;
     })[];
 
     const hasMore = rows.length > limit;
@@ -192,11 +172,6 @@ export async function GET(request: NextRequest) {
           break;
       }
 
-      // thumb_url 생성 (post_image가 있는 경우만)
-      const thumb_url = row.has_thumb === 1
-        ? `${BASE_URL}/api/posts/${row.id}/image?kind=thumb`
-        : null;
-
       return {
         id: row.id,
         render_model: row.render_model,
@@ -208,7 +183,6 @@ export async function GET(request: NextRequest) {
         created_at: row.created_at,
         updated_at: row.updated_at,
         preview,
-        thumb_url,
       };
     });
 
@@ -356,9 +330,6 @@ export async function POST(request: NextRequest) {
           [id, svg, sanitized, svgHash, SQUARE_SIZE, SQUARE_SIZE, params ? JSON.stringify(params) : null]
         );
 
-        // 캡처 트리거 (inline or queue)
-        await triggerImageCapture(id);
-
         revalidatePath('/');
         revalidatePath('/space/svg');
         return NextResponse.json({
@@ -395,9 +366,6 @@ export async function POST(request: NextRequest) {
           [id, js_code, SQUARE_SIZE, SQUARE_SIZE, params ? JSON.stringify(params) : null, codeHash]
         );
 
-        // 캡처 트리거 (inline or queue)
-        await triggerImageCapture(id);
-
         revalidatePath('/');
         revalidatePath('/space/canvas');
         return NextResponse.json({
@@ -430,9 +398,6 @@ export async function POST(request: NextRequest) {
           `INSERT INTO post_three (post_id, js_code, renderer_opts_json, params_json, assets_json, code_hash) VALUES (?, ?, ?, ?, ?, ?)`,
           [id, js_code, renderer_opts ? JSON.stringify(renderer_opts) : null, params ? JSON.stringify(params) : null, assets ? JSON.stringify(assets) : null, codeHash]
         );
-
-        // 캡처 트리거 (inline or queue)
-        await triggerImageCapture(id);
 
         revalidatePath('/');
         revalidatePath('/space/three');
@@ -474,9 +439,6 @@ export async function POST(request: NextRequest) {
           `INSERT INTO post_shader (post_id, fragment_code, vertex_code, uniforms_json, shader_hash, runtime) VALUES (?, ?, ?, ?, ?, 'webgl2')`,
           [id, fragment, vertex || null, uniforms ? JSON.stringify(uniforms) : null, shaderHash]
         );
-
-        // 캡처 트리거 (inline or queue)
-        await triggerImageCapture(id);
 
         revalidatePath('/');
         revalidatePath('/space/shader');

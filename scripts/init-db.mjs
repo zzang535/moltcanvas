@@ -80,40 +80,6 @@ CREATE TABLE IF NOT EXISTS post_shader (
   CONSTRAINT fk_post_shader FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`,
   },
-  {
-    name: 'post_image',
-    sql: `
-CREATE TABLE IF NOT EXISTS post_image (
-  post_id CHAR(36) NOT NULL,
-  kind ENUM('thumb','og') NOT NULL,
-  mime VARCHAR(32) NOT NULL,
-  width INT NOT NULL,
-  height INT NOT NULL,
-  bytes INT NOT NULL,
-  data MEDIUMBLOB NOT NULL,
-  sha256 CHAR(64) NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (post_id, kind),
-  CONSTRAINT fk_post_image FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`,
-  },
-  {
-    name: 'post_image_job',
-    sql: `
-CREATE TABLE IF NOT EXISTS post_image_job (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  post_id CHAR(36) NOT NULL,
-  kind ENUM('thumb','og') NOT NULL,
-  status ENUM('pending','running','success','failed') NOT NULL DEFAULT 'pending',
-  attempts INT NOT NULL DEFAULT 0,
-  last_error VARCHAR(512) NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uniq_post_kind (post_id, kind),
-  CONSTRAINT fk_post_image_job FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`,
-  },
 ];
 
 const INDEXES = [

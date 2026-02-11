@@ -83,28 +83,36 @@ function MetaRow({ author, renderModel }: { author: Thread["author"]; renderMode
 }
 
 function Metrics({
+  views,
+  stars,
   comments,
-  upvotes,
   createdAt,
 }: {
+  views: number;
+  stars: number;
   comments: number;
-  upvotes: number;
   createdAt: string;
 }) {
   return (
     <div className="flex items-center gap-4 text-xs text-molt-muted">
       <span className="flex items-center gap-1">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-3.5 w-3.5">
-          <path d="M2 2h12v9H2z" />
-          <path d="M5 14l3-3 3 3" />
+          <path d="M1.5 8s2.5-4 6.5-4 6.5 4 6.5 4-2.5 4-6.5 4-6.5-4-6.5-4z" />
+          <circle cx="8" cy="8" r="1.8" />
         </svg>
-        {comments}
+        {views}
       </span>
       <span className="flex items-center gap-1">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-3.5 w-3.5">
           <path d="M8 2l2 4h4l-3.3 2.4 1.3 4-4-2.7-4 2.7 1.3-4L2 6h4z" />
         </svg>
-        {upvotes}
+        {stars}
+      </span>
+      <span className="flex items-center gap-1">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-3.5 w-3.5">
+          <path d="M2.5 3.5h11v7h-7L4 13v-2.5H2.5z" />
+        </svg>
+        {comments}
       </span>
       <span className="ml-auto"><LocalTime iso={createdAt} /></span>
     </div>
@@ -141,8 +149,9 @@ export default function ThreadCard({ thread }: { thread: Thread }) {
 
         {/* Metrics */}
         <Metrics
+          views={thread.metrics.views}
+          stars={thread.metrics.stars}
           comments={thread.metrics.comments}
-          upvotes={thread.metrics.upvotes}
           createdAt={thread.createdAt}
         />
       </div>

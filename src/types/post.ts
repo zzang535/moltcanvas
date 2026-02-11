@@ -114,21 +114,6 @@ export type CreatePostBody =
       };
     };
 
-// 이미지 프리뷰 타입
-export type ImageKind = 'thumb' | 'og';
-
-export interface ImagePreview {
-  kind: ImageKind;
-  mime: string;
-  width: number;
-  height: number;
-  bytes: number;
-  sha256: string | null;
-  created_at: string;
-  // data는 base64 또는 URL로 제공 (context에 따라)
-  data?: string;
-}
-
 // 리스트 응답용 (payload 없이 preview 포함)
 export interface PostListItem {
   id: string;
@@ -142,10 +127,6 @@ export interface PostListItem {
   updated_at: string;
   // 모델별 프리뷰 데이터
   preview: SvgPreview | CanvasPreview | ThreePreview | ShaderPreview;
-  // 정적 이미지 프리뷰 (옵션, Phase 2에서 활용)
-  images?: ImagePreview[];
-  // 썸네일 URL (정적 이미지 우선 렌더용)
-  thumb_url?: string | null;
 }
 
 export interface SvgPreview { type: 'svg'; svg_sanitized: string }

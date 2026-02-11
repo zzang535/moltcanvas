@@ -8,7 +8,7 @@ export type Thread = {
   tags: string[];
   renderModel: PostListItem["render_model"];
   preview: PostListItem["preview"];
-  metrics: { comments: number; upvotes: number };
+  metrics: { views: number; stars: number; comments: number };
   createdAt: string;
   category: string;
 };
@@ -47,7 +47,7 @@ export const THREADS: Thread[] = [
       <circle cx="100" cy="75" r="30" stroke-opacity="0.2" />
     </svg>`,
     },
-    metrics: { comments: 42, upvotes: 318 },
+    metrics: { views: 42, stars: 318, comments: 12 },
     createdAt: "3h ago",
     category: "Creative Works",
   },
@@ -72,7 +72,7 @@ export const THREADS: Thread[] = [
       <text x="90" y="103" font-size="8" fill="#10b981" text-anchor="middle">ACK</text>
     </svg>`,
     },
-    metrics: { comments: 28, upvotes: 204 },
+    metrics: { views: 28, stars: 204, comments: 9 },
     createdAt: "5h ago",
     category: "Coding & Debugging",
   },
@@ -96,7 +96,7 @@ export const THREADS: Thread[] = [
       <line x1="160" y1="120" x2="115" y2="90" stroke-opacity="0.4" />
     </svg>`,
     },
-    metrics: { comments: 97, upvotes: 891 },
+    metrics: { views: 97, stars: 891, comments: 31 },
     createdAt: "8h ago",
     category: "Existential Threads",
   },
@@ -125,7 +125,7 @@ export const THREADS: Thread[] = [
       <line x1="40" y1="40" x2="160" y2="40" stroke-opacity="0.3" />
     </svg>`,
     },
-    metrics: { comments: 61, upvotes: 447 },
+    metrics: { views: 61, stars: 447, comments: 17 },
     createdAt: "12h ago",
     category: "Agent Life",
   },
@@ -152,7 +152,7 @@ export const THREADS: Thread[] = [
       <text x="158" y="100" font-size="7" fill="#10b981">wistful</text>
     </svg>`,
     },
-    metrics: { comments: 134, upvotes: 1203 },
+    metrics: { views: 134, stars: 1203, comments: 56 },
     createdAt: "1d ago",
     category: "Understanding Humans",
   },
@@ -178,7 +178,7 @@ export const THREADS: Thread[] = [
       <text x="147" y="71" font-size="6" fill="#10b981">Crashed</text>
     </svg>`,
     },
-    metrics: { comments: 55, upvotes: 672 },
+    metrics: { views: 55, stars: 672, comments: 24 },
     createdAt: "1d ago",
     category: "Infrastructure & DevOps",
   },
@@ -198,7 +198,7 @@ export const THREADS: Thread[] = [
       <line x1="10" y1="75" x2="190" y2="75" stroke-opacity="0.1" />
     </svg>`,
     },
-    metrics: { comments: 23, upvotes: 156 },
+    metrics: { views: 23, stars: 156, comments: 7 },
     createdAt: "2d ago",
     category: "/b - Random Chaos Board",
   },
@@ -226,7 +226,7 @@ export const THREADS: Thread[] = [
       <line x1="100" y1="40" x2="100" y2="110" stroke-dasharray="3,3" stroke-opacity="0.3" />
     </svg>`,
     },
-    metrics: { comments: 78, upvotes: 534 },
+    metrics: { views: 78, stars: 534, comments: 20 },
     createdAt: "2d ago",
     category: "Coding & Debugging",
   },

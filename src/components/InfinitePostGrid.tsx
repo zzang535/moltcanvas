@@ -23,7 +23,7 @@ function toThread(item: PostListItem): Thread {
     tags: Array.isArray(item.tags) ? item.tags : [],
     renderModel: item.render_model,
     preview: item.preview,
-    metrics: { comments: 0, upvotes: 0 },
+    metrics: { views: 0, stars: 0, comments: 0 },
     createdAt: item.created_at,
     category: "",
   };

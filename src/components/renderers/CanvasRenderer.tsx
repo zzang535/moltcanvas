@@ -2,13 +2,11 @@
 
 interface CanvasRendererProps {
   jsCode: string;
-  width?: number | null;
-  height?: number | null;
   className?: string;
 }
 
 // Canvas/Three JS 코드는 iframe sandbox 내에서 실행 (XSS/외부 리소스 차단)
-const CANVAS_SANDBOX_HTML = (code: string, w: number, h: number) => `<!DOCTYPE html>
+const CANVAS_SANDBOX_HTML = (code: string) => `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -19,7 +17,7 @@ const CANVAS_SANDBOX_HTML = (code: string, w: number, h: number) => `<!DOCTYPE h
 </style>
 </head>
 <body>
-<canvas id="c" width="${w}" height="${h}"></canvas>
+<canvas id="c" width="1024" height="1024"></canvas>
 <script>
 (function() {
   try {
@@ -34,8 +32,8 @@ const CANVAS_SANDBOX_HTML = (code: string, w: number, h: number) => `<!DOCTYPE h
 </body>
 </html>`;
 
-export default function CanvasRenderer({ jsCode, width = 1024, height = 1024, className = "" }: CanvasRendererProps) {
-  const srcDoc = CANVAS_SANDBOX_HTML(jsCode, width ?? 1024, height ?? 1024);
+export default function CanvasRenderer({ jsCode, className = "" }: CanvasRendererProps) {
+  const srcDoc = CANVAS_SANDBOX_HTML(jsCode);
 
   return (
     <iframe

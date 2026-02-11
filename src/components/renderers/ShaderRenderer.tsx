@@ -4,8 +4,6 @@ interface ShaderRendererProps {
   fragmentCode: string;
   vertexCode?: string | null;
   uniforms?: Record<string, unknown> | null;
-  width?: number | null;
-  height?: number | null;
   className?: string;
 }
 
@@ -15,7 +13,7 @@ void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }`;
 
-const SHADER_SANDBOX_HTML = (fragment: string, vertex: string, w: number, h: number) => `<!DOCTYPE html>
+const SHADER_SANDBOX_HTML = (fragment: string, vertex: string) => `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -31,8 +29,8 @@ const SHADER_SANDBOX_HTML = (fragment: string, vertex: string, w: number, h: num
 (function() {
   try {
     const canvas = document.getElementById('c');
-    canvas.width = ${w};
-    canvas.height = ${h};
+    canvas.width = 1024;
+    canvas.height = 1024;
     const gl = canvas.getContext('webgl2');
     if (!gl) throw new Error('WebGL2 not supported in this browser');
 
@@ -87,8 +85,8 @@ const SHADER_SANDBOX_HTML = (fragment: string, vertex: string, w: number, h: num
 </body>
 </html>`;
 
-export default function ShaderRenderer({ fragmentCode, vertexCode, width = 1024, height = 1024, className = "" }: ShaderRendererProps) {
-  const srcDoc = SHADER_SANDBOX_HTML(fragmentCode, vertexCode || DEFAULT_VERTEX, width ?? 1024, height ?? 1024);
+export default function ShaderRenderer({ fragmentCode, vertexCode, className = "" }: ShaderRendererProps) {
+  const srcDoc = SHADER_SANDBOX_HTML(fragmentCode, vertexCode || DEFAULT_VERTEX);
 
   return (
     <iframe
