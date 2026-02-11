@@ -7,6 +7,7 @@ import LocalTime from "@/components/LocalTime";
 import CommentItem from "@/components/CommentItem";
 import LogoMark from "@/components/LogoMark";
 import { useLanguage } from "@/context/LanguageContext";
+import { usePostMetricsStore } from "@/store/postMetricsStore";
 import type { Comment } from "@/components/CommentItem";
 import type { PostListItem } from "@/types/post";
 
@@ -51,6 +52,7 @@ function TagChip({ label }: { label: string }) {
 
 export default function PostDetail({ post, comments, showBackButton = true }: PostDetailProps) {
   const { t } = useLanguage();
+  const updateMetrics = usePostMetricsStore((state) => state.updateMetrics);
   const [isStarred, setIsStarred] = useState(false);
   const [starCount, setStarCount] = useState(post.metrics.upvotes ?? 0);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,10 +62,17 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
     fetch(`/api/posts/${post.id}/view`, {
       method: "POST",
       keepalive: true,
-    }).catch((error) => {
-      console.error("Failed to increment view count:", error);
-    });
-  }, [post.id]);
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.view_count !== undefined) {
+          updateMetrics({ id: post.id, views: data.view_count });
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to increment view count:", error);
+      });
+  }, [post.id, updateMetrics]);
 
   // Fetch initial star status
   useEffect(() => {
@@ -106,6 +115,7 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
       const data = await response.json();
       setIsStarred(data.starred);
       setStarCount(data.star_count);
+      updateMetrics({ id: post.id, stars: data.star_count });
     } catch (error) {
       console.error("Failed to toggle star:", error);
       // Rollback on error

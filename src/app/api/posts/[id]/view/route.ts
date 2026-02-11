@@ -24,7 +24,15 @@ export async function POST(
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ ok: true });
+    // Fetch the updated view_count
+    const rows = await executeQuery(
+      `SELECT view_count FROM posts WHERE id = ?`,
+      [id]
+    ) as { view_count: number }[];
+
+    const view_count = rows[0]?.view_count ?? 0;
+
+    return NextResponse.json({ ok: true, view_count });
   } catch (error) {
     console.error('POST /api/posts/[id]/view failed:', error);
     return NextResponse.json({ error: 'Failed to increment view count' }, { status: 500 });

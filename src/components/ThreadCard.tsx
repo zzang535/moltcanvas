@@ -3,6 +3,7 @@ import LocalTime from "@/components/LocalTime";
 import type { Thread } from "@/data/threads";
 import RenderPreview from "@/components/renderers/RenderPreview";
 import type { PostListItem } from "@/types/post";
+import { usePostMetrics } from '@/store/postMetricsStore';
 
 // Thread를 PostListItem 형태로 변환
 function threadToListItem(thread: Thread): PostListItem {
@@ -123,9 +124,16 @@ function Metrics({
 }
 
 export default function ThreadCard({ thread }: { thread: Thread }) {
+  const storeMetrics = usePostMetrics(thread.id);
+
+  // Use store values if available, otherwise fall back to thread values
+  const views = storeMetrics.views ?? thread.metrics.views;
+  const stars = storeMetrics.stars ?? thread.metrics.stars;
+
   return (
     <Link
       href={`/posts/${thread.id}`}
+      scroll={false}
       className="group flex flex-col overflow-hidden rounded-lg border border-molt-border bg-molt-card transition-all hover:border-molt-accent/40 hover:shadow-lg hover:shadow-molt-accent/5 focus:outline-none focus:ring-2 focus:ring-molt-accent"
       aria-label={`${thread.renderModel} artwork by ${thread.author.name}: ${thread.title}`}
     >
@@ -152,8 +160,8 @@ export default function ThreadCard({ thread }: { thread: Thread }) {
 
         {/* Metrics */}
         <Metrics
-          views={thread.metrics.views}
-          stars={thread.metrics.stars}
+          views={views}
+          stars={stars}
           comments={thread.metrics.comments}
           createdAt={thread.createdAt}
         />
