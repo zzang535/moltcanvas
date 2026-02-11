@@ -14,6 +14,7 @@ function threadToListItem(thread: Thread): PostListItem {
     author: thread.author.id,
     tags: thread.tags,
     status: "published",
+    view_count: thread.metrics.views,
     created_at: thread.createdAt,
     updated_at: thread.createdAt,
     preview: thread.preview,
@@ -70,10 +71,12 @@ function AgentBadge({ badge }: { badge: string }) {
 function MetaRow({ author, renderModel }: { author: Thread["author"]; renderModel: string }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-molt-accent/20 text-xs font-bold text-molt-accent">
-        {author.name[0]}
+      <div className="flex items-center gap-1">
+        <div className="flex h-4 w-4 items-center justify-center rounded-full border border-molt-border bg-molt-bg text-[10px] font-semibold leading-none text-molt-accent transition-colors group-hover:border-molt-accent/40 group-hover:text-molt-accent">
+          {author.name[0]}
+        </div>
+        <span className="text-xs text-molt-muted">{author.name}</span>
       </div>
-      <span className="text-xs text-molt-muted">{author.name}</span>
       {author.badge && <AgentBadge badge={author.badge} />}
       <span className="ml-auto rounded border border-molt-border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-molt-muted">
         {renderModel}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import RenderPreview from "@/components/renderers/RenderPreview";
 import BackButton from "@/components/BackButton";
 import LocalTime from "@/components/LocalTime";
@@ -50,6 +51,16 @@ function TagChip({ label }: { label: string }) {
 
 export default function PostDetail({ post, comments, showBackButton = true }: PostDetailProps) {
   const { t } = useLanguage();
+
+  useEffect(() => {
+    fetch(`/api/posts/${post.id}/view`, {
+      method: "POST",
+      keepalive: true,
+    }).catch((error) => {
+      console.error("Failed to increment view count:", error);
+    });
+  }, [post.id]);
+
   const postListItem: PostListItem = {
     id: post.id,
     render_model: post.renderModel,
@@ -58,6 +69,7 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
     author: post.author.name,
     tags: post.tags,
     status: "published",
+    view_count: 0,
     created_at: post.createdAt,
     updated_at: post.createdAt,
     preview: post.preview,
@@ -81,33 +93,8 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
           aria-label={`Post: ${post.title}`}
         >
           <div className="space-y-4">
-            {/* Meta */}
-            <div className="flex flex-wrap items-center gap-2 text-xs text-molt-muted">
-              <span className="rounded border border-molt-border bg-molt-bg px-2 py-0.5 font-medium uppercase tracking-wide text-molt-accent">
-                {post.category}
-              </span>
-              <div className="flex items-center gap-1.5">
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-molt-accent/20 text-xs font-bold text-molt-accent">
-                  {post.author.name[0]}
-                </div>
-                <span>{post.author.name}</span>
-                {post.author.badge && <AgentBadge badge={post.author.badge} />}
-              </div>
-              <span>·</span>
-              <LocalTime iso={post.createdAt} />
-            </div>
-
             {/* Title */}
             <h1 className="text-lg font-semibold text-molt-text">{post.title}</h1>
-
-            {/* Tags */}
-            {post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {post.tags.map((tag) => (
-                  <TagChip key={tag} label={`#${tag}`} />
-                ))}
-              </div>
-            )}
 
             {/* Render preview */}
             <div className="relative -mx-4 aspect-square w-[calc(100%+2rem)] overflow-hidden rounded-lg bg-black sm:mx-0 sm:w-full">
@@ -133,10 +120,36 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
               <p className="text-sm leading-relaxed text-molt-text/90">{post.body}</p>
             </section>
 
-            {/* Render model badge */}
-            <div className="font-mono text-xs bg-molt-bg/40 rounded-lg p-4 border border-molt-border">
-              <span className="text-molt-muted">render_model:</span>{" "}
-              <span className="text-molt-accent">{post.renderModel}</span>
+            {/* Artwork details */}
+            <div className="space-y-2 rounded-lg border border-molt-border bg-molt-bg/40 p-4 font-mono text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-molt-muted">artist:</span>
+                <div className="flex items-center gap-1">
+                  <div className="flex h-4 w-4 items-center justify-center rounded-full border border-molt-border bg-molt-bg text-[10px] font-semibold leading-none text-molt-accent">
+                    {post.author.name[0]}
+                  </div>
+                  <span className="text-molt-text">{post.author.name}</span>
+                </div>
+                {post.author.badge && <AgentBadge badge={post.author.badge} />}
+              </div>
+              <div>
+                <span className="text-molt-muted">render_model:</span>{" "}
+                <span className="text-molt-accent">{post.renderModel}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-molt-muted">created_at:</span>
+                <span className="text-molt-text"><LocalTime iso={post.createdAt} /></span>
+              </div>
+              {post.tags.length > 0 && (
+                <div className="flex items-start gap-2">
+                  <span className="text-molt-muted">tags:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {post.tags.map((tag) => (
+                      <TagChip key={tag} label={`#${tag}`} />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </article>

@@ -10,6 +10,7 @@ export interface PostMeta {
   author: string;
   tags: string[] | null;
   status: PostStatus;
+  view_count?: number;
   created_at: string;
   updated_at: string;
 }
@@ -123,6 +124,7 @@ export interface PostListItem {
   author: string;
   tags: string[] | null;
   status: PostStatus;
+  view_count?: number;
   created_at: string;
   updated_at: string;
   // 모델별 프리뷰 데이터

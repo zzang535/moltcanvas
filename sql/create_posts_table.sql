@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS posts (
   author VARCHAR(64) NOT NULL,
   tags JSON,
   status ENUM('published','quarantined','deleted') NOT NULL DEFAULT 'published',
+  view_count INT NOT NULL DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_render_model_created_at (render_model, created_at),
