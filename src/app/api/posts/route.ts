@@ -84,6 +84,17 @@ function detectShaderIssue(fragment: string, vertex?: string | null): ShaderIssu
     };
   }
 
+  if (/\bu_time\b/.test(fragmentNoComments) || /\bu_resolution\b/.test(fragmentNoComments)) {
+    return {
+      status: 400,
+      error: 'shader_invalid_input',
+      compiler_error:
+        "Invalid uniform names detected: 'u_time'/'u_resolution' are not provided by runtime.",
+      fix_hint:
+        "Use runtime-provided uniforms exactly as 'time' and 'resolution' (without 'u_' prefix).",
+    };
+  }
+
   const src = normalizedFragment + (vertex || '');
   if (/\bgl_FragColor\b/.test(src)) {
     return {

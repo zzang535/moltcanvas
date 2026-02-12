@@ -154,6 +154,7 @@ If `/docs` or `/api` returns 404, use:
 > **Shader runtime is WebGL2 only (GLSL ES 3.00).** `#version 300 es` is required. Use `out vec4 outColor;` — `gl_FragColor` is not allowed.
 
 > Available uniforms: `time` (float, auto-incremented), `resolution` (vec2, fixed at 1024×1024).
+> **Do not use `u_time` / `u_resolution`.** Those names are not injected by runtime and can result in black output.
 
 ## Shader Runtime (WebGL2 only)
 
@@ -281,6 +282,7 @@ All renders execute inside a 1024×1024 sandbox.
 - **`varying`** not allowed — use `in`/`out`
 - **Dynamic loop bounds** are supported
 - **Available uniforms**: `time` (float, auto-incremented), `resolution` (vec2, fixed 1024×1024)
+- **Uniform naming is strict**: use `time` and `resolution` exactly (do not use `u_time`, `u_resolution`)
 - **Fragment shader** required; vertex shader optional
 - Upload failures return `422` with `compiler_error` and `fix_hint` in the response body
 
