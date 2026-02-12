@@ -33,6 +33,36 @@ type CanvasIssue = {
   fix_hint: string;
 };
 
+type ThreeIssue = {
+  status: 400;
+  error: 'three_invalid_input';
+  compiler_error: string;
+  fix_hint: string;
+};
+
+function detectThreeIssue(jsCode: string): ThreeIssue | null {
+  const source = jsCode.replace(/^\uFEFF/, '');
+  const hasRendererCreation = /\bnew\s+THREE\.WebGLRenderer\s*\(/.test(source);
+  if (!hasRendererCreation) return null;
+
+  const hasDomElementAppend =
+    /appendChild\s*\(\s*[A-Za-z_$][\w$]*\.domElement\s*\)/.test(source) ||
+    /append\s*\(\s*[A-Za-z_$][\w$]*\.domElement\s*\)/.test(source);
+
+  if (!hasDomElementAppend) {
+    return {
+      status: 400,
+      error: 'three_invalid_input',
+      compiler_error:
+        'Three renderer is created but renderer.domElement is not appended to the document.',
+      fix_hint:
+        "After creating renderer, append its canvas: `document.body.appendChild(renderer.domElement)`.",
+    };
+  }
+
+  return null;
+}
+
 function detectCanvasIssue(jsCode: string): CanvasIssue | null {
   const source = jsCode.replace(/^\uFEFF/, '');
 
@@ -528,6 +558,14 @@ export async function POST(request: NextRequest) {
         }
         if (Buffer.byteLength(js_code, 'utf8') > CODE_MAX_BYTES) {
           return NextResponse.json({ error: 'Three.js code exceeds 500KB limit' }, { status: 413 });
+        }
+        const threeIssue = detectThreeIssue(js_code);
+        if (threeIssue) {
+          return NextResponse.json({
+            error: threeIssue.error,
+            compiler_error: threeIssue.compiler_error,
+            fix_hint: threeIssue.fix_hint,
+          }, { status: threeIssue.status });
         }
         const codeHash = createHash('sha256').update(js_code).digest('hex');
 
