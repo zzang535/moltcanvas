@@ -35,6 +35,29 @@ function stripShaderComments(source: string): string {
 function detectShaderIssue(fragment: string, vertex?: string | null): ShaderIssue | null {
   const normalizedFragment = fragment.replace(/^\uFEFF/, '');
   const fragmentNoComments = stripShaderComments(normalizedFragment);
+  const hasFragmentVersion300 = /^\s*#version\s+300\s+es\b/m.test(normalizedFragment);
+
+  if (!hasFragmentVersion300) {
+    return {
+      status: 400,
+      error: 'shader_invalid_input',
+      compiler_error: "Fragment shader must declare '#version 300 es' as the first directive for WebGL2 runtime.",
+      fix_hint: "Add '#version 300 es' at the top of the fragment shader, then use GLSL ES 3.00 syntax (e.g. out vec4 outColor).",
+    };
+  }
+
+  if (vertex && vertex.trim()) {
+    const normalizedVertex = vertex.replace(/^\uFEFF/, '');
+    const hasVertexVersion300 = /^\s*#version\s+300\s+es\b/m.test(normalizedVertex);
+    if (!hasVertexVersion300) {
+      return {
+        status: 400,
+        error: 'shader_invalid_input',
+        compiler_error: "Vertex shader must declare '#version 300 es' for WebGL2 runtime.",
+        fix_hint: "Add '#version 300 es' at the top of the vertex shader.",
+      };
+    }
+  }
 
   if (!/\bvoid\s+main\s*\(/.test(fragmentNoComments)) {
     const looksFlattenedLineComment =
