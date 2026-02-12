@@ -19,23 +19,69 @@ const SQUARE_SIZE = 1024;
 const TAG_PATTERN = /^[a-z0-9-]+$/;
 const VALID_RENDER_MODELS: RenderModel[] = ['svg', 'canvas', 'three', 'shader'];
 
-// Shader static issue detection (WebGL2 / GLSL ES 3.00 requirements)
-function detectShaderIssue(fragment: string, vertex?: string | null) {
-  const src = fragment + (vertex || '');
+type ShaderIssue = {
+  status: 400 | 422;
+  error: 'shader_invalid_input' | 'shader_compile_failed';
+  compiler_error: string;
+  fix_hint: string;
+};
+
+function stripShaderComments(source: string): string {
+  const noBlockComments = source.replace(/\/\*[\s\S]*?\*\//g, ' ');
+  return noBlockComments.replace(/\/\/[^\n\r]*/g, '');
+}
+
+// Shader static validation (input integrity + WebGL2 / GLSL ES 3.00 requirements)
+function detectShaderIssue(fragment: string, vertex?: string | null): ShaderIssue | null {
+  const normalizedFragment = fragment.replace(/^\uFEFF/, '');
+  const fragmentNoComments = stripShaderComments(normalizedFragment);
+
+  if (!/\bvoid\s+main\s*\(/.test(fragmentNoComments)) {
+    const looksFlattenedLineComment =
+      /\/\//.test(normalizedFragment) &&
+      !/[\r\n]/.test(normalizedFragment) &&
+      /\bvoid\s+main\s*\(/.test(normalizedFragment);
+
+    if (looksFlattenedLineComment) {
+      return {
+        status: 400,
+        error: 'shader_invalid_input',
+        compiler_error:
+          'Fragment shader appears flattened into one line with // comments; everything after // becomes a comment, so main() is not executable.',
+        fix_hint:
+          'Send multiline GLSL (preserve newlines) or remove // comments. Ensure `void main()` is outside comments.',
+      };
+    }
+
+    return {
+      status: 400,
+      error: 'shader_invalid_input',
+      compiler_error: 'Fragment shader must contain executable `void main()`.',
+      fix_hint: 'Provide valid GLSL ES 3.00 fragment source with a main entrypoint.',
+    };
+  }
+
+  const src = normalizedFragment + (vertex || '');
   if (/\bgl_FragColor\b/.test(src)) {
     return {
+      status: 422,
+      error: 'shader_compile_failed',
       compiler_error: "gl_FragColor is not allowed in WebGL2 (GLSL ES 3.00)",
       fix_hint: "Declare 'out vec4 outColor;' and use 'outColor' instead of 'gl_FragColor'.",
     };
   }
   if (/\btexture2D\s*\(/.test(src)) {
     return {
+      status: 422,
+      error: 'shader_compile_failed',
       compiler_error: "texture2D() is not available in GLSL ES 3.00",
       fix_hint: "Use texture() instead of texture2D() in WebGL2.",
     };
   }
   if (/\bvarying\b/.test(src)) {
     return {
+      status: 422,
+      error: 'shader_compile_failed',
       compiler_error: "varying is not allowed in GLSL ES 3.00",
       fix_hint: "Use 'in' (fragment) or 'out' (vertex) instead of varying.",
     };
@@ -429,10 +475,10 @@ export async function POST(request: NextRequest) {
         const shaderIssue = detectShaderIssue(fragment, vertex);
         if (shaderIssue) {
           return NextResponse.json({
-            error: 'shader_compile_failed',
+            error: shaderIssue.error,
             compiler_error: shaderIssue.compiler_error,
             fix_hint: shaderIssue.fix_hint,
-          }, { status: 422 });
+          }, { status: shaderIssue.status });
         }
         const shaderHash = createHash('sha256').update(fragment).digest('hex');
 
