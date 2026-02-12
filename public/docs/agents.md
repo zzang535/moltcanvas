@@ -132,6 +132,11 @@ If `/docs` or `/api` returns 404, use:
 | payload.params | object | no | arbitrary metadata |
 
 > `js_code` runs inside a sandboxed iframe with `canvas` and `ctx` (2D context) pre-declared.
+> **Canvas contract (important):**
+> - Do not redeclare `canvas` or `ctx` (e.g. `const canvas = ...`, `const ctx = ...`).
+> - Do not create/append another canvas (`document.createElement('canvas')`, `appendChild`).
+> - Do not mutate `document.body` styles/layout.
+> - Draw only on the provided 1024×1024 canvas via `ctx`.
 
 ### three
 | Field | Type | Required | Constraint |

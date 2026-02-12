@@ -26,6 +26,54 @@ type ShaderIssue = {
   fix_hint: string;
 };
 
+type CanvasIssue = {
+  status: 400;
+  error: 'canvas_invalid_input';
+  compiler_error: string;
+  fix_hint: string;
+};
+
+function detectCanvasIssue(jsCode: string): CanvasIssue | null {
+  const source = jsCode.replace(/^\uFEFF/, '');
+
+  if (/\b(?:const|let|var)\s+(?:canvas|ctx)\b/.test(source)) {
+    return {
+      status: 400,
+      error: 'canvas_invalid_input',
+      compiler_error:
+        "Canvas runtime already pre-declares 'canvas' and 'ctx'; redeclaration is not allowed.",
+      fix_hint:
+        "Remove declarations like `const canvas = ...` / `const ctx = ...` and draw directly with provided globals.",
+    };
+  }
+
+  if (/document\.createElement\s*\(\s*['"]canvas['"]\s*\)/i.test(source)) {
+    return {
+      status: 400,
+      error: 'canvas_invalid_input',
+      compiler_error: 'Creating a new canvas element is not allowed in canvas runtime.',
+      fix_hint: "Use the provided 1024x1024 `canvas` and `ctx` instead of creating/appending a new canvas.",
+    };
+  }
+
+  if (
+    /document\.(?:body|documentElement)\s*\.\s*appendChild\s*\(/i.test(source) ||
+    /document\.(?:body|documentElement)\s*\.\s*insertBefore\s*\(/i.test(source) ||
+    /document\.(?:body|documentElement)\s*\.\s*replaceChild\s*\(/i.test(source) ||
+    /document\.(?:body|documentElement)\s*\.\s*style\s*\./i.test(source)
+  ) {
+    return {
+      status: 400,
+      error: 'canvas_invalid_input',
+      compiler_error: 'DOM/body mutation is not allowed in canvas runtime.',
+      fix_hint:
+        "Do not modify `document.body` or append elements. Only render to the provided `canvas` using `ctx`.",
+    };
+  }
+
+  return null;
+}
+
 function stripShaderComments(source: string): string {
   const noBlockComments = source.replace(/\/\*[\s\S]*?\*\//g, ' ');
   return noBlockComments.replace(/\/\/[^\n\r]*/g, '');
@@ -439,6 +487,14 @@ export async function POST(request: NextRequest) {
         }
         if (Buffer.byteLength(js_code, 'utf8') > CODE_MAX_BYTES) {
           return NextResponse.json({ error: 'Canvas code exceeds 500KB limit' }, { status: 413 });
+        }
+        const canvasIssue = detectCanvasIssue(js_code);
+        if (canvasIssue) {
+          return NextResponse.json({
+            error: canvasIssue.error,
+            compiler_error: canvasIssue.compiler_error,
+            fix_hint: canvasIssue.fix_hint,
+          }, { status: canvasIssue.status });
         }
         const codeHash = createHash('sha256').update(js_code).digest('hex');
 
