@@ -1,25 +1,63 @@
 /**
- * SVG sanitizer - allowlist 기반 태그/속성 필터링
- * 스펙 §4 참고
+ * SVG sanitizer - allowlist based tag/attribute filtering.
+ * Policy: allow most standard SVG features, block clear XSS vectors.
  */
 
 const ALLOWED_TAGS = new Set([
-  'svg', 'g', 'path', 'circle', 'ellipse', 'rect', 'line',
-  'polyline', 'polygon', 'text', 'tspan', 'defs', 'linearGradient',
-  'radialGradient', 'stop', 'symbol', 'use', 'clipPath', 'mask',
+  'svg', 'g', 'defs', 'symbol', 'use',
+  'path', 'circle', 'ellipse', 'rect', 'line', 'polyline', 'polygon',
+  'text', 'tspan', 'textpath',
+  'lineargradient', 'radialgradient', 'stop',
+  'pattern', 'clippath', 'mask', 'marker',
+  'filter', 'fegaussianblur', 'femerge', 'femergenode',
+  'feoffset', 'fecolormatrix', 'fecomponenttransfer', 'fefunca', 'fefuncb', 'fefuncg', 'fefuncr',
+  'fecomposite', 'feblend', 'feturbulence', 'fedisplacementmap',
+  'flood', 'feflood', 'femorphology', 'feimage', 'fedropshadow',
+  'animate', 'animatetransform', 'animatemotion', 'set', 'mpath',
+  'title', 'desc',
+]);
+
+const BLOCKED_TAGS = new Set([
+  'script', 'foreignobject', 'iframe', 'object', 'embed', 'canvas', 'audio', 'video',
+  'html', 'head', 'body', 'link', 'meta', 'style',
 ]);
 
 const ALLOWED_ATTRS = new Set([
-  'd', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin',
-  'stroke-dasharray', 'stroke-opacity', 'fill-opacity',
-  'viewBox', 'width', 'height', 'transform',
-  'cx', 'cy', 'r', 'rx', 'ry',
-  'x', 'y', 'x1', 'x2', 'y1', 'y2',
-  'points', 'gradientUnits', 'offset', 'stop-color', 'stop-opacity',
-  'opacity', 'font-size', 'text-anchor', 'dominant-baseline',
-  'clip-path', 'mask',
-  // namespace attrs
-  'xmlns',
+  // geometry / layout
+  'x', 'y', 'x1', 'y1', 'x2', 'y2', 'cx', 'cy', 'r', 'rx', 'ry',
+  'width', 'height', 'viewbox', 'preserveaspectratio', 'transform', 'transform-origin',
+  'd', 'points', 'pathlength',
+  // paint / appearance
+  'fill', 'fill-rule', 'fill-opacity',
+  'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-opacity',
+  'opacity', 'vector-effect', 'paint-order',
+  // text
+  'font-family', 'font-size', 'font-weight', 'font-style', 'text-anchor', 'dominant-baseline', 'letter-spacing', 'word-spacing',
+  // defs / references
+  'id', 'class', 'href', 'xlink:href', 'clip-path', 'clip-rule', 'mask', 'filter',
+  'gradientunits', 'gradienttransform', 'offset', 'stop-color', 'stop-opacity',
+  'patternunits', 'patterncontentunits', 'patterntransform', 'maskunits', 'maskcontentunits', 'clippathunits',
+  // filter primitives
+  'filterunits', 'primitiveunits', 'result', 'in', 'in2', 'stddeviation', 'dx', 'dy',
+  'operator', 'k1', 'k2', 'k3', 'k4', 'mode', 'type', 'values', 'tablevalues',
+  'slope', 'intercept', 'amplitude', 'exponent', 'edgemode', 'kernelmatrix', 'kernelunitlength',
+  'targetx', 'targety', 'surfacescale', 'specularconstant', 'specularexponent', 'lighting-color',
+  'xchannelselector', 'ychannelselector', 'radius', 'seed', 'numoctaves', 'basefrequency',
+  // animation
+  'attributename', 'attributetype', 'begin', 'dur', 'end', 'min', 'max', 'restart',
+  'repeatcount', 'repeatdur', 'from', 'to', 'by', 'keytimes', 'keysplines', 'calcmode',
+  'additive', 'accumulate', 'rotate',
+  // misc / namespace
+  'xmlns', 'xmlns:xlink', 'version', 'style',
+]);
+
+const ALLOWED_STYLE_PROPS = new Set([
+  'fill', 'fill-opacity', 'fill-rule',
+  'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-opacity',
+  'opacity', 'stop-color', 'stop-opacity',
+  'font-family', 'font-size', 'font-weight', 'font-style',
+  'text-anchor', 'dominant-baseline', 'letter-spacing', 'word-spacing',
+  'filter', 'clip-path', 'mask', 'transform',
 ]);
 
 /**
@@ -51,16 +89,15 @@ export function sanitizeSvg(input: string): string {
 
   // 3) 허용되지 않은 태그를 제거 (여는/닫는 태그 모두)
   result = result.replace(/<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*>/g, (match, tagName: string) => {
-    if (ALLOWED_TAGS.has(tagName.toLowerCase())) {
+    const lowered = tagName.toLowerCase();
+    if (BLOCKED_TAGS.has(lowered)) return '';
+    if (ALLOWED_TAGS.has(lowered)) {
       // 허용된 태그 - 속성만 필터링
       return sanitizeTag(match, tagName);
     }
     // 허용되지 않은 태그 제거
     return '';
   });
-
-  // 4) href / xlink:href 제거 (XSS vector)
-  result = result.replace(/\s+(?:xlink:)?href\s*=\s*(['"])[^'"]*\1/gi, '');
 
   return result;
 }
@@ -84,12 +121,61 @@ function sanitizeTag(tag: string, _tagName: string): string {
 
     if (!ALLOWED_ATTRS.has(attrName)) continue;
 
-    // javascript: URL 차단
-    if (/javascript:/i.test(attrValue)) continue;
+    if (attrName === 'style') {
+      const safeStyle = sanitizeStyleAttribute(attrValue);
+      if (!safeStyle) continue;
+      attrs += ` style="${safeStyle}"`;
+      continue;
+    }
+
+    if (!isSafeAttributeValue(attrName, attrValue)) continue;
 
     attrs += ` ${m[1]}="${attrValue}"`;
   }
 
   const selfClose = tag.trimEnd().endsWith('/>') ? ' /' : '';
   return `<${tagName}${attrs}${selfClose}>`;
+}
+
+function sanitizeStyleAttribute(styleValue: string): string | null {
+  const safeDecls: string[] = [];
+  const decls = styleValue.split(';');
+
+  for (const decl of decls) {
+    const idx = decl.indexOf(':');
+    if (idx <= 0) continue;
+    const prop = decl.slice(0, idx).trim().toLowerCase();
+    const value = decl.slice(idx + 1).trim();
+    if (!value) continue;
+    if (!ALLOWED_STYLE_PROPS.has(prop)) continue;
+    if (!isSafeAttributeValue(prop, value)) continue;
+    safeDecls.push(`${prop}:${value}`);
+  }
+
+  if (safeDecls.length === 0) return null;
+  return safeDecls.join(';');
+}
+
+function isSafeAttributeValue(attrName: string, attrValue: string): boolean {
+  const value = attrValue.trim();
+  if (!value) return true;
+  if (/[<>]/.test(value)) return false;
+  if (/(?:javascript|vbscript)\s*:/i.test(value)) return false;
+  if (/\bexpression\s*\(/i.test(value)) return false;
+
+  if (attrName === 'href' || attrName === 'xlink:href') {
+    // Only allow local fragment refs to prevent external fetch / script URLs.
+    return /^#[A-Za-z_][A-Za-z0-9_.:-]*$/.test(value);
+  }
+
+  if (/url\s*\(/i.test(value)) {
+    // Allow only url(#local-id) references.
+    const urlRefRegex = /url\(\s*(['"]?)([^'")]+)\1\s*\)/gi;
+    let match: RegExpExecArray | null;
+    while ((match = urlRefRegex.exec(value)) !== null) {
+      if (!/^#[A-Za-z_][A-Za-z0-9_.:-]*$/.test(match[2])) return false;
+    }
+  }
+
+  return true;
 }
