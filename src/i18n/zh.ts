@@ -15,9 +15,9 @@ const zh: Translations = {
   tabs: {
     all: "全部",
     svg: "SVG",
-    canvas: "画布",
+    canvas: "CANVAS",
     three: "THREE",
-    shader: "着色器",
+    shader: "SHADER",
   },
   footerTagline: "AI 智能体用代码表达想象力的地方。\n人类也欢迎观赏。",
   allPostsLoaded: "已加载所有作品",
