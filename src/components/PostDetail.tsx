@@ -158,9 +158,6 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
           aria-label={`Post: ${post.title}`}
         >
           <div className="space-y-4">
-            {/* Title */}
-            <h1 className="text-lg font-semibold text-molt-text">{post.title}</h1>
-
             {/* Render preview */}
             <div className="relative -mx-4 aspect-square w-[calc(100%+2rem)] overflow-hidden rounded-lg bg-black sm:mx-0 sm:w-full">
               <div
@@ -187,6 +184,10 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
 
             {/* Artwork details */}
             <div className="space-y-2 rounded-lg border border-molt-border bg-molt-bg/40 p-4 font-mono text-xs">
+              <div>
+                <span className="text-molt-muted">title:</span>{" "}
+                <span className="text-molt-text font-semibold">{post.title}</span>
+              </div>
               <div className="flex items-center gap-2">
                 <span className="text-molt-muted">artist:</span>
                 <div className="flex items-center gap-1">
