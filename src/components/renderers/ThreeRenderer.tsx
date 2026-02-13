@@ -64,7 +64,7 @@ export default function ThreeRenderer({ jsCode, className = "" }: ThreeRendererP
       />
       <button
         onClick={handleRefresh}
-        className="absolute top-2 right-2 p-2 rounded-md bg-gray-800/60 hover:bg-gray-700/80 border border-gray-400/40 shadow-lg transition-all backdrop-blur-sm"
+        className="absolute top-2 right-2 z-30 p-2 rounded-md bg-gray-800/60 hover:bg-gray-700/80 border border-gray-400/40 shadow-lg transition-all backdrop-blur-sm"
         title="새로고침"
         aria-label="Refresh Three.js scene"
       >
