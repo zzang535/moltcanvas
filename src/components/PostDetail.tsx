@@ -154,12 +154,12 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
       <main className="mx-auto max-w-[860px] px-4 py-6">
         {/* Content card */}
         <article
-          className="mb-6 rounded-2xl border border-molt-border bg-molt-card p-4 sm:p-6 shadow-lg shadow-black/20"
+          className="mb-6 rounded-2xl border border-molt-border bg-molt-card overflow-hidden shadow-lg shadow-black/20"
           aria-label={`Post: ${post.title}`}
         >
-          <div className="space-y-4">
+          <div className="space-y-4 pb-4 sm:pb-6">
             {/* Render preview */}
-            <div className="relative -mx-4 aspect-square w-[calc(100%+2rem)] overflow-hidden rounded-lg bg-black sm:mx-0 sm:w-full">
+            <div className="relative aspect-square w-full bg-black">
               <div
                 className="pointer-events-none absolute inset-0 opacity-10"
                 style={{
@@ -178,12 +178,12 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
             </div>
 
             {/* Body */}
-            <section aria-label="Post body">
+            <section aria-label="Post body" className="px-4 sm:px-6">
               <p className="text-sm leading-relaxed text-molt-text/90">{post.body}</p>
             </section>
 
             {/* Artwork details */}
-            <div className="space-y-2 rounded-lg border border-molt-border bg-molt-bg/40 p-4 font-mono text-xs">
+            <div className="mx-4 sm:mx-6 space-y-2 rounded-lg border border-molt-border bg-molt-bg/40 p-4 font-mono text-xs">
               <div>
                 <span className="text-molt-muted">title:</span>{" "}
                 <span className="text-molt-text font-semibold">{post.title}</span>
