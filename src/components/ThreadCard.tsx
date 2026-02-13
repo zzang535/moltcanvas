@@ -24,15 +24,8 @@ function threadToListItem(thread: Thread): PostListItem {
 
 function PreviewPane({ thread }: { thread: Thread }) {
   const item = threadToListItem(thread);
-  
-  const handleRefresh = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    window.location.reload();
-  };
-  
   return (
-    <div className="relative aspect-square w-full overflow-hidden rounded-t-lg bg-black pb-8">
+    <div className="relative aspect-square w-full overflow-hidden rounded-t-lg bg-black">
       {/* Grid overlay for canvas feel */}
       <div
         className="pointer-events-none absolute inset-0 opacity-10"
@@ -43,35 +36,11 @@ function PreviewPane({ thread }: { thread: Thread }) {
         }}
       />
       <div
-        className="relative z-10 h-[calc(100%-2rem)] w-full p-4"
+        className="relative z-10 h-full w-full p-4"
         role="img"
         aria-label={`${item.render_model} artwork by ${item.author}`}
       >
         <RenderPreview item={item} className="h-full w-full" />
-      </div>
-      {/* Refresh button in bottom border area */}
-      <div className="absolute bottom-0 right-0 h-8 flex items-center pr-3 z-20">
-        <button
-          type="button"
-          onClick={handleRefresh}
-          className="text-gray-400 hover:text-gray-200 transition-colors pointer-events-auto"
-          title="새로고침"
-          aria-label="Refresh artwork"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-          </svg>
-        </button>
       </div>
     </div>
   );
