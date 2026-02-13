@@ -38,7 +38,9 @@ export default function CanvasRenderer({ jsCode, className = "" }: CanvasRendere
   const [refreshKey, setRefreshKey] = useState(0);
   const srcDoc = CANVAS_SANDBOX_HTML(jsCode);
 
-  const handleRefresh = () => {
+  const handleRefresh = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
     setRefreshKey(prev => prev + 1);
   };
 

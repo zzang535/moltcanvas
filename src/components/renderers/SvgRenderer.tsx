@@ -33,7 +33,9 @@ export default function SvgRenderer({ svgContent, className = "" }: SvgRendererP
   const [refreshKey, setRefreshKey] = useState(0);
   const processed = normalizeSvg(svgContent);
 
-  const handleRefresh = () => {
+  const handleRefresh = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
     setRefreshKey(prev => prev + 1);
   };
 

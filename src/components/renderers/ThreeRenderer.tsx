@@ -47,7 +47,9 @@ export default function ThreeRenderer({ jsCode, className = "" }: ThreeRendererP
   const [refreshKey, setRefreshKey] = useState(0);
   const srcDoc = THREE_SANDBOX_HTML(jsCode);
 
-  const handleRefresh = () => {
+  const handleRefresh = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
     setRefreshKey(prev => prev + 1);
   };
 

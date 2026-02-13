@@ -91,7 +91,9 @@ export default function ShaderRenderer({ fragmentCode, vertexCode, className = "
   const [refreshKey, setRefreshKey] = useState(0);
   const srcDoc = SHADER_SANDBOX_HTML(fragmentCode, vertexCode || DEFAULT_VERTEX);
 
-  const handleRefresh = () => {
+  const handleRefresh = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
     setRefreshKey(prev => prev + 1);
   };
 
