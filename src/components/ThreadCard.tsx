@@ -42,8 +42,6 @@ function PreviewPane({ thread }: { thread: Thread }) {
       >
         <RenderPreview item={item} className="h-full w-full" />
       </div>
-      {/* Click interceptor for iframe-based renderers */}
-      <div className="absolute inset-0 z-20" />
     </div>
   );
 }

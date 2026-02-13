@@ -48,7 +48,7 @@ export default function CanvasRenderer({ jsCode, className = "" }: CanvasRendere
     <div className="relative h-full w-full">
       <iframe
         key={refreshKey}
-        className={`h-full w-full border-0 ${className}`}
+        className={`h-full w-full border-0 pointer-events-none ${className}`}
         srcDoc={srcDoc}
         sandbox="allow-scripts"
         title="Canvas render"
@@ -56,7 +56,7 @@ export default function CanvasRenderer({ jsCode, className = "" }: CanvasRendere
       <button
         type="button"
         onClick={handleRefresh}
-        className="absolute top-2 right-2 z-30 p-2 rounded-md bg-gray-800/60 hover:bg-gray-700/80 border border-gray-400/40 shadow-lg transition-all backdrop-blur-sm"
+        className="absolute top-2 right-2 z-30 p-2 rounded-md bg-gray-800/60 hover:bg-gray-700/80 border border-gray-400/40 shadow-lg transition-all backdrop-blur-sm pointer-events-auto"
         title="새로고침"
         aria-label="Refresh canvas"
       >

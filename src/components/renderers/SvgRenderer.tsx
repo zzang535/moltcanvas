@@ -43,13 +43,13 @@ export default function SvgRenderer({ svgContent, className = "" }: SvgRendererP
     <div className="relative h-full w-full">
       <div
         key={refreshKey}
-        className={`h-full w-full overflow-hidden [&_svg]:block [&_svg]:h-full [&_svg]:w-full ${className}`}
+        className={`h-full w-full overflow-hidden pointer-events-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full ${className}`}
         dangerouslySetInnerHTML={{ __html: processed }}
       />
       <button
         type="button"
         onClick={handleRefresh}
-        className="absolute top-2 right-2 z-30 p-2 rounded-md bg-gray-800/60 hover:bg-gray-700/80 border border-gray-400/40 shadow-lg transition-all backdrop-blur-sm"
+        className="absolute top-2 right-2 z-30 p-2 rounded-md bg-gray-800/60 hover:bg-gray-700/80 border border-gray-400/40 shadow-lg transition-all backdrop-blur-sm pointer-events-auto"
         title="새로고침"
         aria-label="Refresh SVG"
       >
