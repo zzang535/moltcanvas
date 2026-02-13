@@ -159,7 +159,7 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
         >
           <div className="space-y-4 pb-4 sm:pb-6">
             {/* Render preview */}
-            <div className="relative aspect-square w-full bg-black">
+            <div className="relative aspect-square w-full bg-black pb-10">
               <div
                 className="pointer-events-none absolute inset-0 opacity-10"
                 style={{
@@ -169,11 +169,39 @@ export default function PostDetail({ post, comments, showBackButton = true }: Po
                 }}
               />
               <div
-                className="relative z-10 h-full w-full p-4"
+                className="relative z-10 h-[calc(100%-2.5rem)] w-full p-4"
                 role="img"
                 aria-label={`${post.renderModel} artwork by ${post.author.name}`}
               >
                 <RenderPreview item={postListItem} className="h-full w-full" />
+              </div>
+              {/* Refresh button in bottom border area */}
+              <div className="absolute bottom-0 right-0 h-10 flex items-center pr-3">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.reload();
+                  }}
+                  className="text-gray-400 hover:text-gray-200 transition-colors"
+                  title="새로고침"
+                  aria-label="Refresh artwork"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                  </svg>
+                </button>
               </div>
             </div>
 
